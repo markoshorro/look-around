@@ -1,4 +1,4 @@
-package gal.udc.evilcorp.lookaround;
+package gal.udc.evilcorp.lookaround.view;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -13,6 +13,8 @@ import java.io.IOException;
  */
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback {
+
+    //TODO: android.hardware.Camera is deprecated, should we replace it?
 
     private SurfaceHolder mHolder;
     private Camera mCamera;

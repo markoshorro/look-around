@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
+import gal.udc.evilcorp.lookaround.view.CameraView;
+
 public class MainActivity extends AppCompatActivity {
 
     private Camera mCamera = null;
