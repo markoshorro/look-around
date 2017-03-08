@@ -2,4 +2,12 @@
 <resources>
     <string name="app_name">LookAround</string>
     <string name="take_picture">Sacar foto</string>
+    <string name="E">E</string>
+    <string name="N">N</string>
+    <string name="NE">NE</string>
+    <string name="NW">NO</string>
+    <string name="S">S</string>
+    <string name="SE">SO</string>
+    <string name="SW">SE</string>
+    <string name="W">O</string>
 </resources>
