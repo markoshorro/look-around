@@ -32,6 +32,7 @@ import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,9 +44,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import gal.udc.evilcorp.lookaround.util.Geolocation;
+
+/*
+* Main class
+* */
+
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "AndroidCameraApi";
+    private Geolocation geolocation;
     private Button takePictureButton;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -67,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +90,28 @@ public class MainActivity extends AppCompatActivity {
                 takePicture();
             }
         });
+
+        //btn to close the application
+        ImageButton imgClose = (ImageButton) findViewById(R.id.imgClose);
+        imgClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.exit(0);
+            }
+        });
+
+        showPermissionDialog();
+        geolocation = new Geolocation(this);
+        geolocation.getLocation();
+    }
+
+    private void showPermissionDialog() {
+        if (!geolocation.checkPermission(this)) {
+            ActivityCompat.requestPermissions(
+                    this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
+                    1);
+        }
     }
 
     TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
@@ -103,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
         public void onSurfaceTextureUpdated(SurfaceTexture surface) {
         }
     };
-
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
         public void onOpened(CameraDevice camera) {
@@ -122,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
             cameraDevice = null;
         }
     };
-
     final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
@@ -131,13 +158,11 @@ public class MainActivity extends AppCompatActivity {
             createCameraPreview();
         }
     };
-
     protected void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
-
     protected void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
@@ -148,8 +173,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     protected void takePicture() {
         if(null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null");
@@ -237,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     protected void createCameraPreview() {
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
@@ -266,7 +288,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     private void openCamera() {
         CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         Log.e(TAG, "is camera open");
@@ -287,7 +308,6 @@ public class MainActivity extends AppCompatActivity {
         }
         Log.e(TAG, "openCamera X");
     }
-
     protected void updatePreview() {
         if(null == cameraDevice) {
             Log.e(TAG, "updatePreview error, return");
@@ -299,7 +319,6 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
-
     private void closeCamera() {
         if (null != cameraDevice) {
             cameraDevice.close();
@@ -310,7 +329,6 @@ public class MainActivity extends AppCompatActivity {
             imageReader = null;
         }
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
@@ -321,11 +339,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
     @Override
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "onResume");
+        geolocation.updateLocation();
         startBackgroundThread();
         if (textureView.isAvailable()) {
             openCamera();
@@ -333,7 +351,6 @@ public class MainActivity extends AppCompatActivity {
             textureView.setSurfaceTextureListener(textureListener);
         }
     }
-
     @Override
     protected void onPause() {
         Log.e(TAG, "onPause");
