@@ -1,6 +1,7 @@
-package gal.udc.evilcorp.lookaround.geolocation;
+package gal.udc.evilcorp.lookaround.util;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -56,6 +57,14 @@ public class Geolocation implements LocationListener {
         }
     }
 
+    public LocationManager getLocationManager() {
+        return this.locationManager;
+    }
+
+    public static boolean checkPermission(final Context context) {
+        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
 
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
