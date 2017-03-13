@@ -2,6 +2,7 @@ package gal.udc.evilcorp.lookaround;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.ImageFormat;
 import android.graphics.SurfaceTexture;
@@ -44,7 +45,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import gal.udc.evilcorp.lookaround.util.Geolocation;
+import gal.udc.evilcorp.lookaround.util.GeolocationService;
 
 /*
 * Main class
@@ -52,8 +53,8 @@ import gal.udc.evilcorp.lookaround.util.Geolocation;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends AppCompatActivity {
-    private static final String TAG = "AndroidCameraApi";
-    private Geolocation geolocation;
+    private static final String TAG = "MainActivity";
+    private GeolocationService geolocation;
     private Button takePictureButton;
     private TextureView textureView;
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,16 +103,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         showPermissionDialog();
-        geolocation = new Geolocation(this);
-        geolocation.getLocation();
+        /*
+         * Creates a new Intent to start the GeolocationService
+         * IntentService.
+         */
+        Intent mServiceIntent = new Intent(this, GeolocationService.class);
+        this.startService(mServiceIntent);
     }
 
+    /*
+    * Ask for permissions needed
+    * */
     private void showPermissionDialog() {
         if (!geolocation.checkPermission(this)) {
             ActivityCompat.requestPermissions(
                     this,
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION},
-                    1);
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
     }
 
@@ -163,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         mBackgroundThread.start();
         mBackgroundHandler = new Handler(mBackgroundThread.getLooper());
     }
+
     protected void stopBackgroundThread() {
         mBackgroundThread.quitSafely();
         try {
@@ -173,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     protected void takePicture() {
         if(null == cameraDevice) {
             Log.e(TAG, "cameraDevice is null");
@@ -334,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // close the app
-                Toast.makeText(MainActivity.this, "Sorry!!!, you can't use this app without granting permission", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Sorry! You can't use this app without granting permission!", Toast.LENGTH_LONG).show();
                 finish();
             }
         }
@@ -343,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "onResume");
-        geolocation.updateLocation();
+        //geolocation.updateLocation();
         startBackgroundThread();
         if (textureView.isAvailable()) {
             openCamera();
