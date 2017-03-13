@@ -13,6 +13,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
@@ -33,8 +34,12 @@ public class GeolocationService extends IntentService implements LocationListene
 
     //private MainActivity context;
     private LocationManager locationManager;
+    private LocalBroadcastManager broadcaster;
     private Location location;
     boolean isGPSEnabled, isNetworkEnabled;
+
+    static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
+    static final public String GEO_MESSAGE = "gal.udc.evilcorp.lookaround.util.COPA_MSG";
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -53,6 +58,14 @@ public class GeolocationService extends IntentService implements LocationListene
         super(name);
     }
 
+    public void sendResult(String message) {
+        broadcaster = LocalBroadcastManager.getInstance(this);
+        Intent intent = new Intent(GEO_RESULT);
+        if(message != null)
+            intent.putExtra(GEO_MESSAGE, message);
+        broadcaster.sendBroadcast(intent);
+    }
+
 
     // Called when the location has changed.
     @Override
@@ -67,8 +80,7 @@ public class GeolocationService extends IntentService implements LocationListene
             String address = addresses.get(0).getAddressLine(0);
             String city = addresses.get(0).getLocality();
             // Update the title of the MainActivity to set the location
-            // .setTitle(Html.fromHtml("<small>"+address + ", " + city+"</small>"));
-            // THE MESSAGE SHOULD BE SENT HERE
+            sendResult(address + ":::::" + city);
         } catch (IOException e) {
             e.printStackTrace();
         }
