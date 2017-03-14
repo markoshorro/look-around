@@ -10,4 +10,7 @@
     <string name="SE">SO</string>
     <string name="SW">SE</string>
     <string name="W">O</string>
+    <string name="location_not_available">Localización no disponible</string>
+    <string name="permission_denied">Permiso denegado</string>
+    <string name="providers_not_available">Proveedores no disponibles</string>
 </resources>

@@ -9,4 +9,8 @@
     <string name="SE">SW</string>
     <string name="SW">SE</string>
     <string name="W">W</string>
+
+    <string name="providers_not_available">Providers not available</string>
+    <string name="permission_denied">Permission denied</string>
+    <string name="location_not_available">Location not available</string>
 </resources>

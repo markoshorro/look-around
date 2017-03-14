@@ -112,14 +112,19 @@ public class MainActivity extends AppCompatActivity {
          * IntentService.
          */
         Intent mServiceIntent = new Intent(this, GeolocationService.class);
-        this.startService(mServiceIntent);
+        startService(mServiceIntent);
 
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra(GeolocationService.GEO_MESSAGE);
-                setTitle(s);
-                // do something here.
+                Log.d(TAG, "received: " + s);
+                String[] addr = s.split(":::::");
+                if (addr.length>=2) {
+                    setTitle(addr[0] + ", " + addr[1]);
+                } else {
+                    setTitle(addr[0]);
+                }
             }
         };
     }
