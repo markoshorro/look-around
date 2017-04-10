@@ -38,6 +38,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.unity3d.player.UnityPlayer;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -60,6 +63,9 @@ public class MainActivity extends AppCompatActivity {
     private GeolocationService geolocation;
     private Button takePictureButton;
     private TextureView textureView;
+
+    protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
+
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -84,7 +90,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+
+        mUnityPlayer = new UnityPlayer(this);
+        setContentView(mUnityPlayer);
+        mUnityPlayer.requestFocus();
+
         textureView = (TextureView) findViewById(R.id.texture);
         assert textureView != null;
         textureView.setSurfaceTextureListener(textureListener);
@@ -127,6 +138,9 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+
+        //getWindow().setFormat(PixelFormat.RGBX_8888); // <--- This makes xperia play happy
     }
 
     /*
@@ -135,6 +149,7 @@ public class MainActivity extends AppCompatActivity {
     private void showPermissionDialog() {
         if (!geolocation.checkPermission(this)) {
             ActivityCompat.requestPermissions(
+
                     this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
                             Manifest.permission.ACCESS_FINE_LOCATION}, 1);
