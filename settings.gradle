@@ -1,1 +1,1 @@
-include ':app', ':Vuforia'
+include ':app', ':libs:Vuforia'

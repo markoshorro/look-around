@@ -90,11 +90,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-
-        mUnityPlayer = new UnityPlayer(this);
-        setContentView(mUnityPlayer);
-        mUnityPlayer.requestFocus();
+        setContentView(R.layout.activity_main);
 
         textureView = (TextureView) findViewById(R.id.texture);
         assert textureView != null;
@@ -139,7 +135,9 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-
+        mUnityPlayer = new UnityPlayer(this);
+        setContentView(mUnityPlayer);
+        mUnityPlayer.requestFocus();
         //getWindow().setFormat(PixelFormat.RGBX_8888); // <--- This makes xperia play happy
     }
 

@@ -1,0 +1,47 @@
+[
+    {
+        "outputFile": "/home/marcos/Android/look-around-git/libs/Vuforia/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values/values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 2,
+                    "startColumn": 4,
+                    "startOffset": 55,
+                    "endColumn": 48,
+                    "endOffset": 99
+                },
+                "from": {
+                    "file": "/home/marcos/Android/look-around-git/libs/Vuforia/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 2,
+                        "startColumn": 4,
+                        "startOffset": 55,
+                        "endColumn": 48,
+                        "endOffset": 99
+                    }
+                }
+            },
+            {
+                "to": {
+                    "startLine": 3,
+                    "startColumn": 4,
+                    "startOffset": 104,
+                    "endLine": 4,
+                    "endColumn": 8,
+                    "endOffset": 197
+                },
+                "from": {
+                    "file": "/home/marcos/Android/look-around-git/libs/Vuforia/build/intermediates/bundles/debug/res/values/values.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 104,
+                        "endLine": 4,
+                        "endColumn": 8,
+                        "endOffset": 197
+                    }
+                }
+            }
+        ]
+    }
+]
