@@ -5,4 +5,6 @@ package gal.udc.evilcorp.lookaround.util;
  */
 
 public class FirstLaunch {
+    // TODO
+    // This class is meant to trigger something when first launch!
 }

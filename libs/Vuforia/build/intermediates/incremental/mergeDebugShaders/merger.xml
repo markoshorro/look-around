@@ -1,2 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/home/marcos/Android/look-around-git/libs/Vuforia/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/home/marcos/Android/look-around-git/libs/Vuforia/src/debug/shaders"/></dataSet></merger>

@@ -13,4 +13,6 @@
     <string name="location_not_available">Localización no disponible</string>
     <string name="permission_denied">Permiso denegado</string>
     <string name="providers_not_available">Proveedores no disponibles</string>
+    <string name="permission_request">Permiso de localización</string>
+    <string name="permission_request_info">Se necesita acceso a la localización</string>
 </resources>

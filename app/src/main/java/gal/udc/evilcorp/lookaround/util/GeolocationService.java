@@ -1,7 +1,6 @@
 package gal.udc.evilcorp.lookaround.util;
 
 import android.Manifest;
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -16,22 +15,24 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.permissioneverywhere.PermissionEverywhere;
+import com.permissioneverywhere.PermissionResponse;
+import com.permissioneverywhere.PermissionResultCallback;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-import gal.udc.evilcorp.lookaround.MainActivity;
 import gal.udc.evilcorp.lookaround.R;
 
 import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by eloy on 09/03/2017.
- * Minor changes by marcos (last change 14/03/2017).
+ * Minor changes by marcos (last change 11/04/2017).
  */
 
 public class GeolocationService extends Service {
@@ -72,6 +73,9 @@ public class GeolocationService extends Service {
         updateLocation();
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
+
+        // TODO
+        // should it be sticky?????
         return START_STICKY;
     }
 
@@ -164,16 +168,26 @@ public class GeolocationService extends Service {
         };
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
+            PermissionEverywhere.getPermission(getApplicationContext(),
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                            Manifest.permission.ACCESS_FINE_LOCATION},
+                    1,
+                    getString(R.string.permission_request),
+                    getString(R.string.permission_request_info),
+                    R.mipmap.ic_launcher)
+                    .enqueue(new PermissionResultCallback() {
+                        @Override
+                        public void onComplete(PermissionResponse permissionResponse) {
+                            // This check is needed but unnecessary
+                            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                                    ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                return;
+                            }
+                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                        }
+                    });
         }
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
 
     }
 

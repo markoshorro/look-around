@@ -13,4 +13,6 @@
     <string name="providers_not_available">Providers not available</string>
     <string name="permission_denied">Permission denied</string>
     <string name="location_not_available">Location not available</string>
+    <string name="permission_request">Location request</string>
+    <string name="permission_request_info">It is needed location service</string>
 </resources>
