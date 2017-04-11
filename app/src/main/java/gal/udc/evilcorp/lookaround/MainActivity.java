@@ -28,6 +28,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Size;
@@ -35,6 +36,7 @@ import android.util.SparseIntArray;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -52,13 +54,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.util.GeolocationService;
+import gal.udc.evilcorp.lookaround.vuforia.UnityPlayerActivity;
 
 /*
 * Main class
 * */
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends UnityPlayerActivity {
     private static final String TAG = "MainActivity";
     private GeolocationService geolocation;
     private Button takePictureButton;
@@ -90,28 +93,52 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
 
-        textureView = (TextureView) findViewById(R.id.texture);
-        assert textureView != null;
-        textureView.setSurfaceTextureListener(textureListener);
-        takePictureButton = (Button) findViewById(R.id.btn_takepicture);
-        assert takePictureButton != null;
-        takePictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                takePicture();
-            }
-        });
+        //textureView = (TextureView) findViewById(R.id.texture);
+        //assert textureView != null;
+        //textureView.setSurfaceTextureListener(textureListener);
+        //takePictureButton = (Button) findViewById(R.id.btn_takepicture);
+        //assert takePictureButton != null;
+        //takePictureButton.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View v) {
+        //        takePicture();
+        //    }
+        //});
 
         //btn to close the application
-        ImageButton imgClose = (ImageButton) findViewById(R.id.imgClose);
-        imgClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                System.exit(0);
+        //ImageButton imgClose = (ImageButton) findViewById(R.id.imgClose);
+        //imgClose.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View view) {
+        //        System.exit(0);
+        //    }
+        //});
+
+        final long delay = 5000;//ms
+
+        Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+            public void run() {
+                ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
+                        (android.R.id.content);
+
+                // find the first leaf view (i.e. a view without children)
+                // the leaf view represents the topmost view in the view stack
+                View topMostView = getLeafView(rootView);
+
+                // let's add a sibling to the leaf view
+                ViewGroup leafParent = (ViewGroup)topMostView.getParent();
+                Button sampleButton = new Button(MainActivity.this);
+                sampleButton.setText("Press Me");
+                leafParent.addView(sampleButton, new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
+                        ActionBar.LayoutParams.WRAP_CONTENT));
+
             }
-        });
+        };
+
+        handler.postDelayed(runnable, delay);
 
         showPermissionDialog();
         /*
@@ -135,10 +162,27 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        mUnityPlayer = new UnityPlayer(this);
-        setContentView(mUnityPlayer);
-        mUnityPlayer.requestFocus();
+        //mUnityPlayer = new UnityPlayer(this);
+        //setContentView(mUnityPlayer);
+        //mUnityPlayer.requestFocus();
         //getWindow().setFormat(PixelFormat.RGBX_8888); // <--- This makes xperia play happy
+    }
+
+    private View getLeafView(View view) {
+        if (view instanceof ViewGroup) {
+            ViewGroup vg = (ViewGroup)view;
+            for (int i = 0; i < vg.getChildCount(); ++i) {
+                View chview = vg.getChildAt(i);
+                View result = getLeafView(chview);
+                if (result != null)
+                    return result;
+            }
+            return null;
+        }
+        else {
+            Log.d(TAG, "Found leaf view");
+            return view;
+        }
     }
 
     /*
@@ -190,6 +234,7 @@ public class MainActivity extends AppCompatActivity {
             cameraDevice = null;
         }
     };
+
     final CameraCaptureSession.CaptureCallback captureCallbackListener = new CameraCaptureSession.CaptureCallback() {
         @Override
         public void onCaptureCompleted(CameraCaptureSession session, CaptureRequest request, TotalCaptureResult result) {
@@ -198,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
             createCameraPreview();
         }
     };
+
     protected void startBackgroundThread() {
         mBackgroundThread = new HandlerThread("Camera Background");
         mBackgroundThread.start();
@@ -387,11 +433,11 @@ public class MainActivity extends AppCompatActivity {
         Log.e(TAG, "onResume");
         //geolocation.updateLocation();
         startBackgroundThread();
-        if (textureView.isAvailable()) {
+        /*if (textureView.isAvailable()) {
             openCamera();
         } else {
             textureView.setSurfaceTextureListener(textureListener);
-        }
+        }*/
     }
     @Override
     protected void onPause() {
