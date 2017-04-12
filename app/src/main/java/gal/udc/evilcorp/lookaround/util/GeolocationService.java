@@ -18,13 +18,23 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import com.permissioneverywhere.PermissionEverywhere;
 import com.permissioneverywhere.PermissionResponse;
 import com.permissioneverywhere.PermissionResultCallback;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import gal.udc.evilcorp.lookaround.R;
 
@@ -42,10 +52,12 @@ public class GeolocationService extends Service {
 
     private LocationManager locationManager;
     private LocalBroadcastManager broadcaster = null;
-    private Location location;
+    private Location actualLocation;
     boolean isGPSEnabled, isNetworkEnabled;
 
     private LocationListener locationListener;
+
+    private RequestQueue queue;
 
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
@@ -73,6 +85,9 @@ public class GeolocationService extends Service {
         updateLocation();
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
+
+        // Start the RequestQueue
+        queue = Volley.newRequestQueue(this);
 
         // TODO
         // should it be sticky?????
@@ -111,11 +126,16 @@ public class GeolocationService extends Service {
              */
             @Override
             public void onLocationChanged(Location location) {
+                actualLocation = location;
                 double lat = (location.getLatitude());
                 double lng = (location.getLongitude());
                 Geocoder geocoder;
                 List<Address> addresses;
                 geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                // Get places by new location
+                getPlacesByLocation();
+
                 try {
                     addresses = geocoder.getFromLocation(lat, lng, 1);
                     String address = addresses.get(0).getAddressLine(0);
@@ -230,7 +250,7 @@ public class GeolocationService extends Service {
                 }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
-                    if (location == null) {
+                    if (actualLocation == null) {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 1, locationListener);
                     }
                 }
@@ -268,6 +288,56 @@ public class GeolocationService extends Service {
         // getting network status
         isNetworkEnabled = locationManager
                 .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+
+
+
+    private void getPlacesByLocation()
+    {
+        if(actualLocation == null)
+        {
+            sendResult(getString(R.string.location_not_available));
+        }
+        else
+        {
+            get("search?type=place&value=1&center="+actualLocation.getLatitude()+","+actualLocation.getLongitude()+"&distance=10&limit=10&offset=0");
+            //queue.start();
+        }
+    }
+
+
+    private void get(String query)
+    {
+        String url ="http://www.graph.facebook.com/"+query;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        sendResult(response);
+                        Log.e(TAG, "*********************************** " + response);
+                        // Display the first 500 characters of the response string.
+                        //mTextView.setText("Response is: "+ response.substring(0,500));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                sendResult("Error to get info from Facebook");
+                //mTextView.setText("That didn't work!");
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> params = new HashMap<String, String>();
+                params.put("Authorization","EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
+                //..add other headers
+                return params;
+            }
+        };
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
     }
 
 }
