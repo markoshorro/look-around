@@ -186,40 +186,14 @@ public class GeolocationService extends Service {
                 updateLocation();
             }
         };
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            PermissionEverywhere.getPermission(getApplicationContext(),
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                            Manifest.permission.ACCESS_FINE_LOCATION},
-                    1,
-                    getString(R.string.permission_request),
-                    getString(R.string.permission_request_info),
-                    R.mipmap.ic_launcher)
-                    .enqueue(new PermissionResultCallback() {
-                        @Override
-                        public void onComplete(PermissionResponse permissionResponse) {
-                            // This check is needed but unnecessary
-                            if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                                    ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                                return;
-                            }
-                            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-                        }
-                    });
+        if (Utils.checkPermission(this)) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         }
 
     }
 
-    /**
-     * Check whether the app has permissions or not
-     * @param context
-     * @return boolean
-     */
-    public static boolean checkPermission(final Context context) {
-        return ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
-    }
+
 
     /**
      * Clean the location manager
@@ -241,8 +215,7 @@ public class GeolocationService extends Service {
                 sendResult(getString(R.string.location_not_available));
             } else {
                 if (isNetworkEnabled) {
-                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                            ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    if (Utils.checkPermission(this)) {
                         Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
                     }
                     Log.d("Network", "Network Enabled");
@@ -265,8 +238,7 @@ public class GeolocationService extends Service {
      * Remove the locations stored
      */
     public void removeLocations() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (Utils.checkPermission(this)) {
             Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
         }
         locationManager.removeUpdates(locationListener);
