@@ -53,11 +53,8 @@ public class MainActivity extends UnityPlayerActivity {
             public void run() {
                 boolean isFirstTime = PreferencesManager.isFirst(MainActivity.this);
 
-                Log.e(TAG, "Thread Runnable gooooooooooooooo");
-
                 if (isFirstTime) {
                     // launch firstlaunchactivity
-                    Log.e(TAG, "FIRST LAUNCH!!!!!!!!!!!!");
                     startActivity(new Intent(MainActivity.this, FirstLaunch.class));
                 }
 
@@ -82,8 +79,6 @@ public class MainActivity extends UnityPlayerActivity {
         });
 
         t.start();
-
-        //handler.postDelayed(runnable, delay);
 
         /*
          * Creates a new Intent to start the GeolocationService
@@ -146,7 +141,6 @@ public class MainActivity extends UnityPlayerActivity {
     @Override
     protected void onPause() {
         Log.e(TAG, "onPause");
-        //closeCamera();
         super.onPause();
     }
 
