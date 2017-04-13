@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
@@ -20,8 +19,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.unity3d.player.UnityPlayer;
 
 import gal.udc.evilcorp.lookaround.util.FirstLaunch;
 import gal.udc.evilcorp.lookaround.util.GeolocationService;
@@ -71,6 +68,9 @@ public class MainActivity extends UnityPlayerActivity {
 
                 // let's add a sibling to the leaf view
                 ViewGroup leafParent = (ViewGroup)topMostView.getParent();
+                if (leafParent != null) {
+                    leafParent.removeView(rootView);
+                }
                 Button sampleButton = new Button(MainActivity.this);
                 sampleButton.setText("Press Me");
                 leafParent.addView(sampleButton, new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
@@ -88,8 +88,7 @@ public class MainActivity extends UnityPlayerActivity {
         Intent mServiceIntent = new Intent(this, GeolocationService.class);
         startService(mServiceIntent);
 
-        final ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
-                (android.R.id.content);
+
 
         final TextView textView = new TextView(this);
 
@@ -97,6 +96,10 @@ public class MainActivity extends UnityPlayerActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+
+                ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
+                        (android.R.id.content);
+
                 String s = intent.getStringExtra(GeolocationService.GEO_MESSAGE);
                 Log.e(TAG, "received: " + s);
                 String[] addr = s.split(":::::");
@@ -108,6 +111,7 @@ public class MainActivity extends UnityPlayerActivity {
                     textView.setText(addr[0]);
                 }
                 rootView.addView(textView);
+              //  ((ViewGroup) textView.getParent()).removeView(rootView);
             }
         };
     }
