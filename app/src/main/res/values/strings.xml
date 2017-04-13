@@ -15,4 +15,7 @@
     <string name="location_not_available">Location not available</string>
     <string name="permission_request">Location request</string>
     <string name="permission_request_info">It is needed location service</string>
+    <string name="first_launch_title">Welcome to LookAround</string>
+    <string name="first_launch_desc">This application will let you discover the most interesting points of the city!</string>
+    <string name="app_intro">First Launch</string>
 </resources>

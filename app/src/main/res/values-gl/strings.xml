@@ -15,4 +15,7 @@
     <string name="providers_not_available">Provedores non dispoñibles</string>
     <string name="permission_request">Permiso de localización</string>
     <string name="permission_request_info">Precízase aceso ó servizo de localización</string>
+    <string name="first_launch_title">Benvido a LookAround</string>
+    <string name="first_launch_desc">Este aplicativo permitirá descubrir os recunchos máis interesantes da cidade!</string>
+    <string name="app_intro">First Launch</string>
 </resources>

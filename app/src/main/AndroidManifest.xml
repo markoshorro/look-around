@@ -16,7 +16,7 @@
 
     <!-- feature -->
     <!--uses-feature android:name="android.hardware.camera" -->
-    <uses-feature android:name="android.hardware.camera2.full" />
+    <!--uses-feature android:name="android.hardware.camera2.full"-->
     <uses-feature android:name="android.hardware.location.gps" />
 
     <!-- application -->
@@ -34,6 +34,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- first launch -->
+        <activity
+            android:name="gal.udc.evilcorp.lookaround.util.FirstLaunch"
+            android:label="@string/app_intro" />
 
         <!--
             Because android:exported is set to "false",

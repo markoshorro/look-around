@@ -32,6 +32,7 @@ dependencies {
     compile project(':libs:Vuforia')
 
     compile 'com.android.volley:volley:1.0.0'
+    compile 'com.github.paolorotolo:appintro:4.1.0'
 
     testCompile 'junit:junit:4.12'
 }

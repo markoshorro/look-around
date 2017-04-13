@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.unity3d.player.UnityPlayer;
 
+import gal.udc.evilcorp.lookaround.util.FirstLaunch;
 import gal.udc.evilcorp.lookaround.util.GeolocationService;
 import gal.udc.evilcorp.lookaround.util.PreferencesManager;
 import gal.udc.evilcorp.lookaround.vuforia.UnityPlayerActivity;
@@ -33,8 +34,6 @@ import gal.udc.evilcorp.lookaround.vuforia.UnityPlayerActivity;
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends UnityPlayerActivity {
     private static final String TAG = "MainActivity";
-
-    protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
 
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
@@ -50,16 +49,16 @@ public class MainActivity extends UnityPlayerActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final long delay = 5000;//ms
-
-        Handler handler = new Handler();
-        Runnable runnable = new Runnable() {
+        Thread t = new Thread(new Runnable() {
             public void run() {
                 boolean isFirstTime = PreferencesManager.isFirst(MainActivity.this);
 
+                Log.e(TAG, "Thread Runnable gooooooooooooooo");
+
                 if (isFirstTime) {
                     // launch firstlaunchactivity
-                    //startActivity(new Intent(MainActivity.this, FirstLaunch.class));
+                    Log.e(TAG, "FIRST LAUNCH!!!!!!!!!!!!");
+                    startActivity(new Intent(MainActivity.this, FirstLaunch.class));
                 }
 
                 //TODO
@@ -80,9 +79,11 @@ public class MainActivity extends UnityPlayerActivity {
                         ActionBar.LayoutParams.WRAP_CONTENT));
 
             }
-        };
+        });
 
-        handler.postDelayed(runnable, delay);
+        t.start();
+
+        //handler.postDelayed(runnable, delay);
 
         /*
          * Creates a new Intent to start the GeolocationService
@@ -95,7 +96,7 @@ public class MainActivity extends UnityPlayerActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra(GeolocationService.GEO_MESSAGE);
-                Log.d(TAG, "received: " + s);
+                Log.e(TAG, "received: " + s);
                 String[] addr = s.split(":::::");
                 if (addr.length>=2) {
                     setTitle(addr[0] + ", " + addr[1]);

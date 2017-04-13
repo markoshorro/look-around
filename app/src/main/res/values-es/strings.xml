@@ -15,4 +15,7 @@
     <string name="providers_not_available">Proveedores no disponibles</string>
     <string name="permission_request">Permiso de localización</string>
     <string name="permission_request_info">Se necesita acceso a la localización</string>
+    <string name="first_launch_title">¡LookAround!</string>
+    <string name="first_launch_desc">Esta aplicación te permitirá descubrir los mejores sitios de la ciudad</string>
+    <string name="app_intro">First Launch</string>
 </resources>
