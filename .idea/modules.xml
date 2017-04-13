@@ -3,13 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/libs/Vuforia/Vuforia.iml" filepath="$PROJECT_DIR$/libs/Vuforia/Vuforia.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libs/Vuforia/Vuforia.iml" filepath="$PROJECT_DIR$/libs/Vuforia/Vuforia.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libs/libs.iml" filepath="$PROJECT_DIR$/libs/libs.iml" />
-      <module fileurl="file://$PROJECT_DIR$/look-around.iml" filepath="$PROJECT_DIR$/look-around.iml" />
-      <module fileurl="file://$PROJECT_DIR$/look-around-git.iml" filepath="$PROJECT_DIR$/look-around-git.iml" />
       <module fileurl="file://$PROJECT_DIR$/look-around-git.iml" filepath="$PROJECT_DIR$/look-around-git.iml" />
     </modules>
   </component>

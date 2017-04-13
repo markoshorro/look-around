@@ -25,7 +25,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import com.permissioneverywhere.PermissionEverywhere;
 import com.permissioneverywhere.PermissionResponse;
 import com.permissioneverywhere.PermissionResultCallback;
@@ -37,8 +36,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import gal.udc.evilcorp.lookaround.R;
-
-import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * Created by eloy on 09/03/2017.
@@ -269,7 +266,7 @@ public class GeolocationService extends Service {
     {
         if(actualLocation == null)
         {
-            sendResult(getString(R.string.location_not_available));
+         //   sendResult(getString(R.string.location_not_available));
         }
         else
         {
@@ -288,7 +285,7 @@ public class GeolocationService extends Service {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        sendResult(response);
+                   //     sendResult(response);
                         Log.e(TAG, "*********************************** " + response);
                         // Display the first 500 characters of the response string.
                         //mTextView.setText("Response is: "+ response.substring(0,500));
@@ -296,7 +293,7 @@ public class GeolocationService extends Service {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                sendResult("Error to get info from Facebook");
+          //      sendResult("Error to get info from Facebook");
                 //mTextView.setText("That didn't work!");
             }
         }){

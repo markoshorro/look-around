@@ -18,6 +18,7 @@ import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.unity3d.player.UnityPlayer;
@@ -87,6 +88,12 @@ public class MainActivity extends UnityPlayerActivity {
         Intent mServiceIntent = new Intent(this, GeolocationService.class);
         startService(mServiceIntent);
 
+        final ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
+                (android.R.id.content);
+
+        final TextView textView = new TextView(this);
+
+
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -95,9 +102,12 @@ public class MainActivity extends UnityPlayerActivity {
                 String[] addr = s.split(":::::");
                 if (addr.length>=2) {
                     setTitle(addr[0] + ", " + addr[1]);
+                    textView.setText(addr[0] + ", " + addr[1]);
                 } else {
                     setTitle(addr[0]);
+                    textView.setText(addr[0]);
                 }
+                rootView.addView(textView);
             }
         };
     }
