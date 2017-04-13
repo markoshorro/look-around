@@ -88,7 +88,7 @@ public class GeolocationService extends Service {
 
         // TODO
         // should it be sticky?????
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Nullable
