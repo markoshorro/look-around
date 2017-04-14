@@ -15,6 +15,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -23,17 +24,42 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HurlStack;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.permissioneverywhere.PermissionEverywhere;
 import com.permissioneverywhere.PermissionResponse;
 import com.permissioneverywhere.PermissionResultCallback;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 import gal.udc.evilcorp.lookaround.R;
 
@@ -53,8 +79,6 @@ public class GeolocationService extends Service {
     boolean isGPSEnabled, isNetworkEnabled;
 
     private LocationListener locationListener;
-
-    private RequestQueue queue;
 
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
@@ -82,9 +106,6 @@ public class GeolocationService extends Service {
         updateLocation();
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
-
-        // Start the RequestQueue
-        queue = Volley.newRequestQueue(this);
 
         // TODO
         // should it be sticky?????
@@ -266,47 +287,130 @@ public class GeolocationService extends Service {
     {
         if(actualLocation == null)
         {
-         //   sendResult(getString(R.string.location_not_available));
+            sendResult(getString(R.string.location_not_available));
         }
         else
         {
-            get("search?type=place&value=1&center="+actualLocation.getLatitude()+","+actualLocation.getLongitude()+"&distance=10&limit=10&offset=0");
-            //queue.start();
+            get("search?type=place&center="+actualLocation.getLatitude()+","+actualLocation.getLongitude()+
+                    "&distance=100&limit=10&access_token=EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
         }
     }
 
 
     private void get(String query)
     {
-        String url ="http://www.graph.facebook.com/"+query;
+        String url ="https://graph.facebook.com/"+query;
 
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                   //     sendResult(response);
-                        Log.e(TAG, "*********************************** " + response);
-                        // Display the first 500 characters of the response string.
-                        //mTextView.setText("Response is: "+ response.substring(0,500));
-                    }
-                }, new Response.ErrorListener() {
+        HurlStack hurlStack = new HurlStack() {
             @Override
-            public void onErrorResponse(VolleyError error) {
-          //      sendResult("Error to get info from Facebook");
-                //mTextView.setText("That didn't work!");
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<String, String>();
-                params.put("Authorization","EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
-                //..add other headers
-                return params;
+            protected HttpURLConnection createConnection(URL url) throws IOException {
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) super.createConnection(url);
+                try {
+                    httpsURLConnection.setSSLSocketFactory(getSSLSocketFactory());
+                    httpsURLConnection.setHostnameVerifier(getHostnameVerifier());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return httpsURLConnection;
             }
         };
+
+        // Request a string response from the provided URL.
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            sendResult(response.getString("data"));
+                        } catch (JSONException e) {
+                            sendResult("Error into response");
+                        }
+                        Log.e(TAG, "Get places response: " + response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        sendResult("Error to get info from Facebook");
+                    }
+        });
+
+        // Start the RequestQueue
+        final RequestQueue requestQueue = Volley.newRequestQueue(this, hurlStack);
+
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        requestQueue.add(jsonRequest);
+    }
+
+
+
+    private HostnameVerifier getHostnameVerifier() {
+        return new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                //return true; // verify always returns true, which could cause insecure network traffic due to trusting TLS/SSL server certificates for wrong hostnames
+                HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
+                return hv.verify("localhost", session);
+            }
+        };
+    }
+
+    private TrustManager[] getWrappedTrustManagers(TrustManager[] trustManagers) {
+        final X509TrustManager originalTrustManager = (X509TrustManager) trustManagers[0];
+        return new TrustManager[]{
+                new X509TrustManager() {
+                    public X509Certificate[] getAcceptedIssuers() {
+                        return originalTrustManager.getAcceptedIssuers();
+                    }
+
+                    public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        try {
+                            if (certs != null && certs.length > 0){
+                                certs[0].checkValidity();
+                            } else {
+                                originalTrustManager.checkClientTrusted(certs, authType);
+                            }
+                        } catch (CertificateException e) {
+                            Log.w("checkClientTrusted", e.toString());
+                        }
+                    }
+
+                    public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        try {
+                            if (certs != null && certs.length > 0){
+                                certs[0].checkValidity();
+                            } else {
+                                originalTrustManager.checkServerTrusted(certs, authType);
+                            }
+                        } catch (CertificateException e) {
+                            Log.w("checkServerTrusted", e.toString());
+                        }
+                    }
+                }
+        };
+    }
+
+    private SSLSocketFactory getSSLSocketFactory()
+            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
+        CertificateFactory cf = CertificateFactory.getInstance("X.509");
+        InputStream caInput = getResources().openRawResource(R.raw.mykey); // this cert file stored in \app\src\main\res\raw folder path
+
+        Certificate ca = cf.generateCertificate(caInput);
+        caInput.close();
+
+        KeyStore keyStore = KeyStore.getInstance("BKS");
+        keyStore.load(null, null);
+        keyStore.setCertificateEntry("ca", ca);
+
+        String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+        tmf.init(keyStore);
+
+        TrustManager[] wrappedTrustManagers = getWrappedTrustManagers(tmf.getTrustManagers());
+
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, wrappedTrustManagers, null);
+
+        return sslContext.getSocketFactory();
     }
 
 }

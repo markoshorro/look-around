@@ -18,4 +18,8 @@
     <string name="first_launch_title">Welcome to LookAround</string>
     <string name="first_launch_desc">This application will let you discover the most interesting points of the city!</string>
     <string name="app_intro">First Launch</string>
+
+    <string name="access_token">EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD</string>
+    <string name="distance">100</string>
+    <string name="limit">10</string>
 </resources>
