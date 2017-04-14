@@ -7,6 +7,13 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:textSize="18sp" >
+    </TextView>
+
     <TextureView
         android:id="@+id/texture"
         android:layout_width="match_parent"

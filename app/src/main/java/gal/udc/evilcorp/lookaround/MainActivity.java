@@ -46,6 +46,9 @@ public class MainActivity extends UnityPlayerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        final ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
+                (android.R.id.content);
+        final TextView textView = (TextView)findViewById(R.id.location);
 
         Thread t = new Thread(new Runnable() {
             public void run() {
@@ -59,8 +62,7 @@ public class MainActivity extends UnityPlayerActivity {
                 //TODO
                 // NEED TO REDO THIS CODE
                 // THIS CODE IS JUST AN EXAMPLE
-                ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
-                        (android.R.id.content);
+
 
                 // find the first leaf view (i.e. a view without children)
                 // the leaf view represents the topmost view in the view stack
@@ -68,13 +70,18 @@ public class MainActivity extends UnityPlayerActivity {
 
                 // let's add a sibling to the leaf view
                 ViewGroup leafParent = (ViewGroup)topMostView.getParent();
-                if (leafParent != null) {
-                    leafParent.removeView(rootView);
-                }
+
                 Button sampleButton = new Button(MainActivity.this);
                 sampleButton.setText("Press Me");
                 leafParent.addView(sampleButton, new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                         ActionBar.LayoutParams.WRAP_CONTENT));
+
+               /* View.OnClickListener myhandler1 = new View.OnClickListener() {
+                    public void onClick(View v) {
+                        // it was the 1st button
+                        sampleButton.setText("Pressed");
+                    }
+                };*/
 
             }
         });
@@ -90,27 +97,38 @@ public class MainActivity extends UnityPlayerActivity {
 
 
 
-        final TextView textView = new TextView(this);
+
 
 
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
-                        (android.R.id.content);
+
 
                 String s = intent.getStringExtra(GeolocationService.GEO_MESSAGE);
                 Log.e(TAG, "received: " + s);
                 String[] addr = s.split(":::::");
                 if (addr.length>=2) {
                     setTitle(addr[0] + ", " + addr[1]);
-                    textView.setText(addr[0] + ", " + addr[1]);
+                    if(textView != null) {
+                        textView.setText(addr[0] + ", " + addr[1]);
+                    }
+
                 } else {
                     setTitle(addr[0]);
-                    textView.setText(addr[0]);
+                    if(textView != null) {
+                        textView.setText(addr[0]);
+                    }
+
                 }
-                rootView.addView(textView);
+
+
+
+                if(textView != null) {
+                    rootView.addView(textView);
+                }
+
               //  ((ViewGroup) textView.getParent()).removeView(rootView);
             }
         };
