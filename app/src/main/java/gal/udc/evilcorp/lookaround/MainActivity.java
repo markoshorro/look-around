@@ -81,17 +81,23 @@ public class MainActivity extends UnityPlayerActivity {
                 // let's add a sibling to the leaf view
                 ViewGroup leafParent = (ViewGroup)topMostView.getParent();
 
-                Button sampleButton = new Button(MainActivity.this);
+                final Button sampleButton = new Button(MainActivity.this);
                 sampleButton.setText("Press Me");
                 leafParent.addView(sampleButton, new ActionBar.LayoutParams(ActionBar.LayoutParams.WRAP_CONTENT,
                         ActionBar.LayoutParams.WRAP_CONTENT));
 
-               /* View.OnClickListener myhandler1 = new View.OnClickListener() {
-                    public void onClick(View v) {
-                        // it was the 1st button
+
+                sampleButton.setOnClickListener(new View.OnClickListener()
+                {
+                    public void onClick(View v)
+                    {
                         sampleButton.setText("Pressed");
+                        takeScreenshot();
                     }
-                };*/
+                });
+
+
+
 
             }
         });
@@ -217,7 +223,7 @@ public class MainActivity extends UnityPlayerActivity {
         }
 
     }
-    
+
     private void openScreenshot(File imageFile) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
