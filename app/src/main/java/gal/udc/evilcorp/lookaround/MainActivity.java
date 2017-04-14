@@ -46,9 +46,12 @@ public class MainActivity extends UnityPlayerActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         final ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
                 (android.R.id.content);
-        final TextView textView = (TextView)findViewById(R.id.location);
+
+        final TextView textView = new TextView(this);
 
         Thread t = new Thread(new Runnable() {
             public void run() {
@@ -103,33 +106,20 @@ public class MainActivity extends UnityPlayerActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-
-
-
                 String s = intent.getStringExtra(GeolocationService.GEO_MESSAGE);
                 Log.e(TAG, "received: " + s);
                 String[] addr = s.split(":::::");
                 if (addr.length>=2) {
-                    setTitle(addr[0] + ", " + addr[1]);
-                    if(textView != null) {
+
                         textView.setText(addr[0] + ", " + addr[1]);
-                    }
-
                 } else {
-                    setTitle(addr[0]);
-                    if(textView != null) {
                         textView.setText(addr[0]);
-                    }
-
                 }
 
-
-
-                if(textView != null) {
+                if(textView.getParent() == null) {
                     rootView.addView(textView);
                 }
 
-              //  ((ViewGroup) textView.getParent()).removeView(rootView);
             }
         };
     }
