@@ -32,6 +32,7 @@ import com.permissioneverywhere.PermissionEverywhere;
 import com.permissioneverywhere.PermissionResponse;
 import com.permissioneverywhere.PermissionResultCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,6 +48,7 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -62,6 +64,7 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import gal.udc.evilcorp.lookaround.R;
+import gal.udc.evilcorp.lookaround.model.Place;
 
 /**
  * Created by eloy on 09/03/2017.
@@ -79,6 +82,8 @@ public class GeolocationService extends Service {
     boolean isGPSEnabled, isNetworkEnabled;
 
     private LocationListener locationListener;
+
+    ArrayList<Place> places = new ArrayList<Place>();
 
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
@@ -291,7 +296,9 @@ public class GeolocationService extends Service {
         }
         else
         {
-            get("search?type=place&center="+actualLocation.getLatitude()+","+actualLocation.getLongitude()+
+            //get("search?type=place&center="+actualLocation.getLatitude()+","+actualLocation.getLongitude()+
+            //        "&distance=100&limit=10&access_token=EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
+            get("search?type=place&center=43.368065,-8.400727" +
                     "&distance=100&limit=10&access_token=EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
         }
     }
@@ -322,6 +329,13 @@ public class GeolocationService extends Service {
                     public void onResponse(JSONObject response) {
                         try {
                             sendResult(response.getString("data"));
+                            JSONArray jsonList = response.getJSONArray("data");
+                            for(int i=0;i<jsonList.length();i++)
+                            {
+                                JSONObject obj = jsonList.getJSONObject(i);
+                                Place place = new Place(obj.getString("id"), obj.getString("name"));
+                                places.add(place);
+                            }
                         } catch (JSONException e) {
                             sendResult("Error into response");
                         }
