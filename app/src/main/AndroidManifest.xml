@@ -38,7 +38,8 @@
         <!-- first launch -->
         <activity
             android:name="gal.udc.evilcorp.lookaround.util.FirstLaunch"
-            android:label="@string/app_intro" />
+            android:label="@string/app_intro"
+            android:screenOrientation="portrait"/>
 
         <!--
             Because android:exported is set to "false",
