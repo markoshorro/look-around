@@ -296,15 +296,18 @@ public class GeolocationService extends Service {
         }
         else
         {
+            // actual location request
             //get("search?type=place&center="+actualLocation.getLatitude()+","+actualLocation.getLongitude()+
             //        "&distance=100&limit=10&access_token=EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
-            get("search?type=place&center=43.368065,-8.400727" +
+
+            // especific location to test
+            requestPlaces("search?type=place&center=43.368065,-8.400727" +
                     "&distance=100&limit=10&access_token=EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
         }
     }
 
 
-    private void get(String query)
+    private void requestPlaces(String query)
     {
         String url ="https://graph.facebook.com/"+query;
 
@@ -329,13 +332,7 @@ public class GeolocationService extends Service {
                     public void onResponse(JSONObject response) {
                         try {
                             sendResult(response.getString("data"));
-                            JSONArray jsonList = response.getJSONArray("data");
-                            for(int i=0;i<jsonList.length();i++)
-                            {
-                                JSONObject obj = jsonList.getJSONObject(i);
-                                Place place = new Place(obj.getString("id"), obj.getString("name"));
-                                places.add(place);
-                            }
+                            parsePlaces(response);
                         } catch (JSONException e) {
                             sendResult("Error into response");
                         }
@@ -344,9 +341,94 @@ public class GeolocationService extends Service {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendResult("Error to get info from Facebook");
+                        sendResult("Error to get places from Facebook");
                     }
         });
+
+        // Start the RequestQueue
+        final RequestQueue requestQueue = Volley.newRequestQueue(this, hurlStack);
+
+        // Add the request to the RequestQueue.
+        requestQueue.add(jsonRequest);
+    }
+
+
+    private void parsePlaces(JSONObject json)
+    {
+        JSONArray jsonList = null;
+        try {
+            jsonList = json.getJSONArray("data");
+            for(int i=0;i<jsonList.length();i++)
+            {
+                JSONObject obj = jsonList.getJSONObject(i);
+                Place place = new Place(obj.getString("id"), obj.getString("name"));
+                places.add(place);
+            }
+            getEventsByPlaces();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void getEventsByPlaces()
+    {
+        if(places!=null && places.size()>0)
+        {
+            for (int i=0;i<places.size();i++)
+            {
+                String query = places.get(i).getId()+"/events";
+                requestEvents(query);
+            }
+        }
+    }
+
+
+    private void requestEvents(String query)
+    {
+        String url ="https://graph.facebook.com/"+query;
+
+        HurlStack hurlStack = new HurlStack() {
+            @Override
+            protected HttpURLConnection createConnection(URL url) throws IOException {
+                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) super.createConnection(url);
+                try {
+                    httpsURLConnection.setSSLSocketFactory(getSSLSocketFactory());
+                    httpsURLConnection.setHostnameVerifier(getHostnameVerifier());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return httpsURLConnection;
+            }
+        };
+
+        // Request a string response from the provided URL.
+        JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            sendResult(response.getString("data"));
+                        } catch (JSONException e) {
+                            sendResult("Error into response");
+                        }
+                        Log.e(TAG, "Get events response: " + response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        sendResult("Error to get events from Facebook");
+                    }
+                }
+        )
+        {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Authorization", "OAuth EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
+                return params;
+            }
+        };
 
         // Start the RequestQueue
         final RequestQueue requestQueue = Volley.newRequestQueue(this, hurlStack);
