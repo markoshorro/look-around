@@ -64,6 +64,7 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import gal.udc.evilcorp.lookaround.R;
+import gal.udc.evilcorp.lookaround.model.Event;
 import gal.udc.evilcorp.lookaround.model.Place;
 
 /**
@@ -409,6 +410,7 @@ public class GeolocationService extends Service {
                     public void onResponse(JSONObject response) {
                         try {
                             sendResult(response.getString("data"));
+                            parseEvents(response);
                         } catch (JSONException e) {
                             sendResult("Error into response");
                         }
@@ -435,6 +437,23 @@ public class GeolocationService extends Service {
 
         // Add the request to the RequestQueue.
         requestQueue.add(jsonRequest);
+    }
+
+    private void parseEvents(JSONObject json)
+    {
+        JSONArray jsonList = null;
+        ArrayList<Event> events = new ArrayList<Event>();
+        try {
+            jsonList = json.getJSONArray("data");
+            for(int i=0;i<jsonList.length();i++)
+            {
+                JSONObject obj = jsonList.getJSONObject(i);
+                Event event = new Event(obj.getString("name"), obj.getString("description"));
+                events.add(event);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 
