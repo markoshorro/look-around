@@ -95,10 +95,6 @@ public class MainActivity extends UnityPlayerActivity {
                         takeScreenshot();
                     }
                 });
-
-
-
-
             }
         });
 
@@ -111,11 +107,6 @@ public class MainActivity extends UnityPlayerActivity {
         Intent mServiceIntent = new Intent(this, GeolocationService.class);
         startService(mServiceIntent);
 
-
-
-
-
-
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -123,7 +114,6 @@ public class MainActivity extends UnityPlayerActivity {
                 Log.e(TAG, "received: " + s);
                 String[] addr = s.split(":::::");
                 if (addr.length>=2) {
-
                         textView.setText(addr[0] + ", " + addr[1]);
                 } else {
                         textView.setText(addr[0]);
@@ -163,7 +153,7 @@ public class MainActivity extends UnityPlayerActivity {
         if (requestCode == REQUEST_CAMERA_PERMISSION) {
             if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
                 // close the app
-                Toast.makeText(MainActivity.this, "Sorry! You can't use this app without granting permission!", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show();
                 finish();
             }
         }
@@ -231,7 +221,4 @@ public class MainActivity extends UnityPlayerActivity {
         intent.setDataAndType(uri, "image/*");
         startActivity(intent);
     }
-
-
-
 }

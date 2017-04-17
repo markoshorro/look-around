@@ -6,6 +6,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,6 +37,8 @@ public class FirstLaunch extends AppIntro {
                 R.drawable.common_signin_btn_icon_light,
                 Color.parseColor("#2f9bff")));
 
+        //TODO
+        // CHECK THIS
         if (!Utils.checkPermission(this)) {
             PermissionEverywhere.getPermission(getApplicationContext(),
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -56,36 +59,32 @@ public class FirstLaunch extends AppIntro {
                     });
         }
 
-
-        // OPTIONAL METHODS
         // Override bar/separator color.
-        setBarColor(Color.parseColor("#3F51B5"));
-        setSeparatorColor(Color.parseColor("#2196F3"));
+        setBarColor(ContextCompat.getColor(this, R.color.colorPrimary));
+        setSeparatorColor(ContextCompat.getColor(this, R.color.colorSecondary));
 
         // Hide Skip/Done button.
         showSkipButton(true);
         setProgressButtonEnabled(true);
-
-        // Turn vibration on and set intensity.
-        // NOTE: you will probably need to ask VIBRATE permission in Manifest.
     }
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {
         super.onSkipPressed(currentFragment);
-        // Do something when users tap on Skip button.
+        // Do something when users tap on Skip button
+        finish();
     }
 
     @Override
     public void onDonePressed(Fragment currentFragment) {
         super.onDonePressed(currentFragment);
-        // Do something when users tap on Done button.
+        // Do something when users tap on Done button
         finish();
     }
 
     @Override
     public void onSlideChanged(@Nullable Fragment oldFragment, @Nullable Fragment newFragment) {
         super.onSlideChanged(oldFragment, newFragment);
-        // Do something when the slide changes.
+        // This method is not used...
     }
 }
