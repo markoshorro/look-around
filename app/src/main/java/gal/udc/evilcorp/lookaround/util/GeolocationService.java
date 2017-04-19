@@ -81,7 +81,7 @@ public class GeolocationService extends Service {
 
     private LocationListener locationListener;
 
-    ArrayList<Place> places = new ArrayList<Place>();
+    ArrayList<Place> places = new ArrayList<>();
 
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
@@ -110,8 +110,6 @@ public class GeolocationService extends Service {
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
 
-        // TODO
-        // should it be sticky?????
         return START_NOT_STICKY;
     }
 

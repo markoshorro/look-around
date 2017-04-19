@@ -22,4 +22,6 @@
     <string name="dialog_cancel" >Cancelar</string>
     <string name="need_permission">"Necesitas permisos de "</string>
     <string name="review_permissions">Se necesitan algunos permisos denegados</string>
+    <string name="action_settings">Ajustes</string>
+    <string name="action_about">Acerca</string>
 </resources>
