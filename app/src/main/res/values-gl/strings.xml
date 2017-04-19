@@ -14,8 +14,12 @@
     <string name="permission_denied">Permiso denegado</string>
     <string name="providers_not_available">Provedores non dispoñibles</string>
     <string name="permission_request">Permiso de localización</string>
-    <string name="permission_request_info">Precízase aceso ó servizo de localización</string>
+    <string name="permission_request_info">Necesítase aceso ó servizo de localización</string>
     <string name="first_launch_title">Benvido a LookAround</string>
     <string name="first_launch_desc">Este aplicativo permitirá descubrir os recunchos máis interesantes da cidade!</string>
-    <string name="app_intro">First Launch</string>
+    <string name="app_intro">Primeiro Uso</string>
+    <string name="dialog_ok">Aceptar</string>
+    <string name="dialog_cancel" >Cancelar</string>
+    <string name="need_permission">"Precisas o permiso de "</string>
+    <string name="review_permissions">Necesítanse algúns permisos que foron denegados</string>
 </resources>

@@ -22,4 +22,8 @@
     <string name="access_token">EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD</string>
     <string name="distance">100</string>
     <string name="limit">10</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_cancel" >Cancel</string>
+    <string name="need_permission">You need permission to</string>
+    <string name="review_permissions">Some permissions are denied</string>
 </resources>

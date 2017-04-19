@@ -1,7 +1,10 @@
 package gal.udc.evilcorp.lookaround;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -12,8 +15,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Surface;
@@ -23,13 +28,22 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.vuforia.ar.pl.DebugLog;
+
 import java.io.File;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.microedition.khronos.opengles.GL10;
 
 import gal.udc.evilcorp.lookaround.util.FirstLaunch;
 import gal.udc.evilcorp.lookaround.util.GeolocationService;
 import gal.udc.evilcorp.lookaround.util.PreferencesManager;
+import gal.udc.evilcorp.lookaround.util.Utils;
 import gal.udc.evilcorp.lookaround.vuforia.UnityPlayerActivity;
 
 /*
@@ -40,6 +54,8 @@ import gal.udc.evilcorp.lookaround.vuforia.UnityPlayerActivity;
 public class MainActivity extends UnityPlayerActivity {
     private static final String TAG = "MainActivity";
 
+    private static Activity mActivity;
+
     private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
     static {
         ORIENTATIONS.append(Surface.ROTATION_0, 90);
@@ -47,18 +63,25 @@ public class MainActivity extends UnityPlayerActivity {
         ORIENTATIONS.append(Surface.ROTATION_180, 270);
         ORIENTATIONS.append(Surface.ROTATION_270, 180);
     }
-    private static final int REQUEST_CAMERA_PERMISSION = 200;
+    final private int REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 124;
+
     private BroadcastReceiver receiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mActivity = this;
 
         final ViewGroup rootView = (ViewGroup)MainActivity.this.findViewById
                 (android.R.id.content);
 
         final TextView textView = new TextView(this);
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            //requestPermissionMarshmallow();
+        } else {
+            // Pre-Marshmallow
+        }
 
         Thread t = new Thread(new Runnable() {
             public void run() {
@@ -67,12 +90,8 @@ public class MainActivity extends UnityPlayerActivity {
                 if (isFirstTime) {
                     // launch firstlaunchactivity
                     startActivity(new Intent(MainActivity.this, FirstLaunch.class));
+
                 }
-
-                //TODO
-                // NEED TO REDO THIS CODE
-                // THIS CODE IS JUST AN EXAMPLE
-
 
                 // find the first leaf view (i.e. a view without children)
                 // the leaf view represents the topmost view in the view stack
@@ -92,20 +111,13 @@ public class MainActivity extends UnityPlayerActivity {
                     public void onClick(View v)
                     {
                         sampleButton.setText("Pressed");
-                        takeScreenshot();
+                        shareScreen();
                     }
                 });
             }
         });
 
         t.start();
-
-        /*
-         * Creates a new Intent to start the GeolocationService
-         * IntentService.
-         */
-        Intent mServiceIntent = new Intent(this, GeolocationService.class);
-        startService(mServiceIntent);
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -147,17 +159,109 @@ public class MainActivity extends UnityPlayerActivity {
         }
     }
 
+    private void requestPermissionMarshmallow() {
+        Log.e(TAG, "requestPermissionMarshmallow!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        List<String> permissionsNeeded = new ArrayList<>();
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CAMERA_PERMISSION) {
-            if (grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                // close the app
-                Toast.makeText(MainActivity.this, getString(R.string.permission_denied), Toast.LENGTH_LONG).show();
-                finish();
+        final List<String> permissionsList = new ArrayList<>();
+        if (!addPermission(permissionsList, Manifest.permission.ACCESS_FINE_LOCATION))
+            permissionsNeeded.add("GPS");
+        /*if (!addPermission(permissionsList, Manifest.permission.ACCESS_COARSE_LOCATION))
+            permissionsNeeded.add("GPS");*/
+        if (!addPermission(permissionsList, Manifest.permission.CAMERA))
+            permissionsNeeded.add("Camera");
+        if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+            permissionsNeeded.add("Write memory");
+        if (!addPermission(permissionsList, Manifest.permission.INTERNET))
+            permissionsNeeded.add("Internet");
+
+        if (permissionsList.size() > 0) {
+            if (permissionsNeeded.size() > 0) {
+                // Need Rationale
+                String message = getString(R.string.need_permission) + " " + permissionsNeeded.get(0);
+                for (int i = 1; i < permissionsNeeded.size(); i++) {
+                    message = message + ", " + permissionsNeeded.get(i);
+                }
+                showMessageOKCancel(message,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(MainActivity.this,
+                                        permissionsList.toArray(new String[permissionsList.size()]),
+                                        REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+                            }
+                        });
+                return;
             }
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    permissionsList.toArray(new String[permissionsList.size()]),
+                    REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS);
+            return;
         }
     }
+
+    private void showMessageOKCancel(String message, DialogInterface.OnClickListener okListener) {
+        new AlertDialog.Builder(this)
+                .setMessage(message)
+                .setPositiveButton(getString(R.string.dialog_ok), okListener)
+                .setNegativeButton(getString(R.string.dialog_cancel), null)
+                .create()
+                .show();
+    }
+
+    private boolean addPermission(List<String> permissionsList, String permission) {
+        if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+            permissionsList.add(permission);
+            // Check for Rationale Option
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, permission))
+                return false;
+        }
+        return true;
+    }
+
+    /*@Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS:
+            {
+                Map<String, Integer> perms = new HashMap<>();
+                // Initial
+                perms.put(Manifest.permission.ACCESS_FINE_LOCATION, PackageManager.PERMISSION_GRANTED);
+*//*
+                perms.put(Manifest.permission.ACCESS_COARSE_LOCATION, PackageManager.PERMISSION_GRANTED);
+*//*
+                perms.put(Manifest.permission.CAMERA, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.WRITE_EXTERNAL_STORAGE, PackageManager.PERMISSION_GRANTED);
+                perms.put(Manifest.permission.INTERNET, PackageManager.PERMISSION_GRANTED);
+                // Fill with results
+                for (int i = 0; i < permissions.length; i++)
+                    perms.put(permissions[i], grantResults[i]);
+                // Check for ACCESS_FINE_LOCATION
+                if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        //&& perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
+                    // All Permissions Granted
+                    *//*
+                    * Creates a new Intent to start the GeolocationService
+                    * IntentService.
+                    *//*
+                    Intent mServiceIntent = new Intent(this, GeolocationService.class);
+                    startService(mServiceIntent);
+                } else {
+                    // Permission Denied
+                    Toast.makeText(this, getString(R.string.review_permissions), Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+            break;
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+    }*/
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -183,42 +287,29 @@ public class MainActivity extends UnityPlayerActivity {
         super.onStop();
     }
 
-
-    private void takeScreenshot() {
-        Date now = new Date();
-        android.text.format.DateFormat.format("yyyy-MM-dd_hh:mm:ss", now);
-
+    private void shareScreen() {
         try {
-            // image naming and path  to include sd card  appending name you choose for file
-            String mPath = Environment.getExternalStorageDirectory().toString() + "/" + now + ".jpg";
 
-            // create bitmap screen capture
-            View v1 = getWindow().getDecorView().getRootView();
-            v1.setDrawingCacheEnabled(true);
-            Bitmap bitmap = Bitmap.createBitmap(v1.getDrawingCache());
-            v1.setDrawingCacheEnabled(false);
+            File cacheDir = new File(
+                    android.os.Environment.getExternalStorageDirectory(),
+                    "devdeeds");
 
-            File imageFile = new File(mPath);
+            if (!cacheDir.exists()) {
+                cacheDir.mkdirs();
+            }
 
-            FileOutputStream outputStream = new FileOutputStream(imageFile);
-            int quality = 100;
-            bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream);
-            outputStream.flush();
-            outputStream.close();
 
-            openScreenshot(imageFile);
-        } catch (Throwable e) {
-            // Several error may come out with file handling or OOM
-            e.printStackTrace();
+            String path = new File(
+                    android.os.Environment.getExternalStorageDirectory(),
+                    "devdeeds") + "/screenshot.jpg";
+
+            Utils.savePic(Utils.takeScreenShot(this), path);
+
+            Toast.makeText(getApplicationContext(), "Screenshot Saved", Toast.LENGTH_SHORT).show();
+
+            startActivity(Utils.openScreenshot(new File(path)));
+        } catch (NullPointerException ignored) {
+            ignored.printStackTrace();
         }
-
-    }
-
-    private void openScreenshot(File imageFile) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(imageFile);
-        intent.setDataAndType(uri, "image/*");
-        startActivity(intent);
     }
 }

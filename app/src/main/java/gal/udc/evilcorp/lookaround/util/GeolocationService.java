@@ -28,9 +28,6 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.permissioneverywhere.PermissionEverywhere;
-import com.permissioneverywhere.PermissionResponse;
-import com.permissioneverywhere.PermissionResultCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -165,7 +162,7 @@ public class GeolocationService extends Service {
                     String address = addresses.get(0).getAddressLine(0);
                     String city = addresses.get(0).getLocality();
                     // Update the title of the MainActivity to set the location
-                    Log.d(TAG, "sendingResult...");
+                    Log.e(TAG, "sendingResult...");
                     sendResult(address + ":::::" + city);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -239,8 +236,9 @@ public class GeolocationService extends Service {
                 sendResult(getString(R.string.location_not_available));
             } else {
                 if (isNetworkEnabled) {
-                    if (Utils.checkPermission(this)) {
+                    if (!Utils.checkPermission(this)) {
                         Toast.makeText(this, getString(R.string.permission_denied), Toast.LENGTH_SHORT).show();
+                        return;
                     }
                     Log.d("Network", "Network Enabled");
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60, 1, locationListener);

@@ -17,5 +17,9 @@
     <string name="permission_request_info">Se necesita acceso a la localización</string>
     <string name="first_launch_title">¡LookAround!</string>
     <string name="first_launch_desc">Esta aplicación te permitirá descubrir los mejores sitios de la ciudad</string>
-    <string name="app_intro">First Launch</string>
+    <string name="app_intro">Primer Uso</string>
+    <string name="dialog_ok">Aceptar</string>
+    <string name="dialog_cancel" >Cancelar</string>
+    <string name="need_permission">"Necesitas permisos de "</string>
+    <string name="review_permissions">Se necesitan algunos permisos denegados</string>
 </resources>
