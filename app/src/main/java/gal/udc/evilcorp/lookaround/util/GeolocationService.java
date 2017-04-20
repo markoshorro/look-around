@@ -251,7 +251,7 @@ public class GeolocationService extends Service {
                 if (isGPSEnabled) {
                     if (actualLocation == null) {
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 1,
-                                );
+                                locationListener);
                     }
                 }
             }

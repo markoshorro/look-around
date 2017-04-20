@@ -1,5 +1,6 @@
 package gal.udc.evilcorp.lookaround;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+    private static Activity mActivity;
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -85,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, GeolocationService.class);
         startService(intent);
 
+        mActivity = this;
+
         // listener
         receiver = new BroadcastReceiver() {
             @Override
@@ -99,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
                                 Float.valueOf(tokens[2])); break;
                     case Utils.MSG_EVT: break;
                     case Utils.MSG_ERR:
-                    case Utils.MSG_NA: break;
+                    case Utils.MSG_NA:
+                        Utils.buildAlertMessageNoGps(mActivity);
+                        break;
                     default: break;
                 }
             }
