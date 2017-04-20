@@ -7,18 +7,13 @@
         android:minSdkVersion="21"
         android:targetSdkVersion="21" />
 
-    <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="true" />
-
     <!-- permission -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /-->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!-- feature -->
-    <!--uses-feature android:name="android.hardware.camera" -->
-    <!--uses-feature android:name="android.hardware.camera2.full"-->
     <uses-feature android:name="android.hardware.location.gps" />
 
     <!-- application -->
@@ -30,11 +25,16 @@
         android:theme="@style/AppTheme">
 
         <!-- main activity -->
+        <!-- https://stackoverflow.com/questions/5913130/dont-reload-application-when-orientation-changes -->
+        <!-- launchMode = singleTask to avoid multiple instances and keep in the stack -->
         <activity android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|screenSize"
             android:noHistory="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -44,15 +44,27 @@
             android:name="gal.udc.evilcorp.lookaround.util.FirstLaunch"
             android:label="@string/app_intro"
             android:screenOrientation="portrait"
-            android:parentActivityName=".MainActivity"/>
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleInstance"
+            android:parentActivityName=".MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
 
         <!-- Unity launch -->
         <activity
             android:name="gal.udc.evilcorp.lookaround.UnityPlayerActivity"
-            android:label="@string/app_intro"
+            android:label="@string/vuforia"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".MainActivity" />
+        </activity>
 
         <!--
             Because android:exported is set to "false",
