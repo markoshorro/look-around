@@ -66,7 +66,7 @@ import gal.udc.evilcorp.lookaround.model.Place;
 
 /**
  * Created by eloy on 09/03/2017.
- * Minor changes by marcos (last change 11/04/2017).
+ * Minor changes by marcos (last change 20/04/2017).
  */
 
 public class GeolocationService extends Service {
@@ -132,6 +132,9 @@ public class GeolocationService extends Service {
         broadcaster.sendBroadcast(intent);
     }
 
+    /**
+     * Adds listener
+     */
     private void addListenerLocation() {
         Log.e(TAG, "****************************************addlistener");
 
@@ -192,7 +195,6 @@ public class GeolocationService extends Service {
              */
             @Override
             public void onProviderEnabled(String s) {
-                //Toast.makeText(getApplicationContext(), "Enabled provider", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "****************************************ONPROVIDERENABLED");
                 updateLocation();
             }
@@ -204,19 +206,18 @@ public class GeolocationService extends Service {
              */
             @Override
             public void onProviderDisabled(String s) {
-                //Toast.makeText(getApplicationContext(), "Disabled provider", Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "****************************************ONPROVIDERDISABLED");
                 updateLocation();
             }
         };
         if (Utils.checkPermission(this)) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+                    locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+                    locationListener);
         }
 
     }
-
-
 
     /**
      * Clean the location manager
@@ -243,12 +244,14 @@ public class GeolocationService extends Service {
                         return;
                     }
                     Log.d("Network", "Network Enabled");
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60, 1, locationListener);
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60, 1,
+                            locationListener);
                 }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
                     if (actualLocation == null) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 1, locationListener);
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 1,
+                                );
                     }
                 }
             }
@@ -286,9 +289,9 @@ public class GeolocationService extends Service {
                 .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
     }
 
-
-
-
+    /**
+     * This method creates the request for facebook events
+     */
     private void getPlacesByLocation()
     {
         if(actualLocation == null)
@@ -298,8 +301,9 @@ public class GeolocationService extends Service {
         else
         {
             // actual location request
-            requestPlaces("search?type=place&center=" + actualLocation.getLatitude() + "," + actualLocation.getLongitude() +
-                    "&distance=100&limit=10&access_token=" + Utils.ACCESS_TOKEN_FB);
+            requestPlaces("search?type=place&center=" + actualLocation.getLatitude() + ","
+                    + actualLocation.getLongitude() + "&distance=100&limit=10&access_token=" +
+                    Utils.ACCESS_TOKEN_FB);
 
             // especific location to test
             //requestPlaces("search?type=place&center=43.368065,-8.400727" +
@@ -307,7 +311,9 @@ public class GeolocationService extends Service {
         }
     }
 
-
+    /**
+     * This method makes the request for facebook events
+     */
     private void requestPlaces(String query)
     {
         String url = Utils.URL_FB + query;
@@ -315,7 +321,8 @@ public class GeolocationService extends Service {
         HurlStack hurlStack = new HurlStack() {
             @Override
             protected HttpURLConnection createConnection(URL url) throws IOException {
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) super.createConnection(url);
+                HttpsURLConnection httpsURLConnection =
+                        (HttpsURLConnection) super.createConnection(url);
                 try {
                     httpsURLConnection.setSSLSocketFactory(getSSLSocketFactory());
                     httpsURLConnection.setHostnameVerifier(getHostnameVerifier());
@@ -332,17 +339,20 @@ public class GeolocationService extends Service {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER + response.getString("data"));
+                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER +
+                                    response.getString("data"));
                             parsePlaces(response);
                         } catch (JSONException e) {
-                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error into response");
+                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
+                                    "Error into response");
                         }
                         Log.e(TAG, "Get places response: " + response);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error to get places from Facebook");
+                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
+                                "Error to get places from Facebook");
                     }
         });
 
@@ -353,7 +363,9 @@ public class GeolocationService extends Service {
         requestQueue.add(jsonRequest);
     }
 
-
+    /**
+     * This method parses the response from facebook
+     */
     private void parsePlaces(JSONObject json)
     {
         JSONArray jsonList = null;
@@ -371,7 +383,9 @@ public class GeolocationService extends Service {
         }
     }
 
-
+    /**
+     * This method creates multiple requests
+     */
     private void getEventsByPlaces()
     {
         if(places!=null && places.size()>0)
@@ -384,7 +398,9 @@ public class GeolocationService extends Service {
         }
     }
 
-
+    /**
+     * This method sends multiple requests
+     */
     private void requestEvents(String query)
     {
         String url = Utils.URL_FB + query;
@@ -392,7 +408,8 @@ public class GeolocationService extends Service {
         HurlStack hurlStack = new HurlStack() {
             @Override
             protected HttpURLConnection createConnection(URL url) throws IOException {
-                HttpsURLConnection httpsURLConnection = (HttpsURLConnection) super.createConnection(url);
+                HttpsURLConnection httpsURLConnection =
+                        (HttpsURLConnection) super.createConnection(url);
                 try {
                     httpsURLConnection.setSSLSocketFactory(getSSLSocketFactory());
                     httpsURLConnection.setHostnameVerifier(getHostnameVerifier());
@@ -409,17 +426,20 @@ public class GeolocationService extends Service {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER + response.getString("data"));
+                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER +
+                                    response.getString("data"));
                             parseEvents(response);
                         } catch (JSONException e) {
-                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error into response");
+                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
+                                    "Error into response");
                         }
                         Log.e(TAG, "Get events response: " + response);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error to get events from Facebook");
+                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
+                                "Error to get events from Facebook");
                     }
                 }
         )
@@ -439,6 +459,9 @@ public class GeolocationService extends Service {
         requestQueue.add(jsonRequest);
     }
 
+    /**
+     * This method parses multiple requests
+     */
     private void parseEvents(JSONObject json)
     {
         JSONArray jsonList = null;
@@ -456,19 +479,25 @@ public class GeolocationService extends Service {
         }
     }
 
-
-
+    /**
+     * This method verfies hostname
+     */
     private HostnameVerifier getHostnameVerifier() {
         return new HostnameVerifier() {
             @Override
             public boolean verify(String hostname, SSLSession session) {
-                //return true; // verify always returns true, which could cause insecure network traffic due to trusting TLS/SSL server certificates for wrong hostnames
+                //return true; // verify always returns true,
+                // which could cause insecure network traffic due to
+                // trusting TLS/SSL server certificates for wrong hostnames
                 HostnameVerifier hv = HttpsURLConnection.getDefaultHostnameVerifier();
                 return hv.verify("localhost", session);
             }
         };
     }
 
+    /**
+     * Certifications
+     */
     private TrustManager[] getWrappedTrustManagers(TrustManager[] trustManagers) {
         final X509TrustManager originalTrustManager = (X509TrustManager) trustManagers[0];
         return new TrustManager[]{
@@ -505,9 +534,11 @@ public class GeolocationService extends Service {
     }
 
     private SSLSocketFactory getSSLSocketFactory()
-            throws CertificateException, KeyStoreException, IOException, NoSuchAlgorithmException, KeyManagementException {
+            throws CertificateException, KeyStoreException, IOException,
+            NoSuchAlgorithmException, KeyManagementException {
         CertificateFactory cf = CertificateFactory.getInstance("X.509");
-        InputStream caInput = getResources().openRawResource(R.raw.mykey); // this cert file stored in \app\src\main\res\raw folder path
+        InputStream caInput = getResources().openRawResource(R.raw.mykey);
+        // this cert file stored in \app\src\main\res\raw folder path
 
         Certificate ca = cf.generateCertificate(caInput);
         caInput.close();
