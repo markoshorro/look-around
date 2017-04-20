@@ -33,4 +33,5 @@
     <string name="section_one">MAP</string>
     <string name="section_two">EVENTS</string>
     <string name="section_three">AR</string>
+    <string name="map_current_pos">Current position</string>
 </resources>

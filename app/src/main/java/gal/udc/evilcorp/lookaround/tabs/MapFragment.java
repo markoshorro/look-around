@@ -20,6 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import gal.udc.evilcorp.lookaround.R;
 import gal.udc.evilcorp.lookaround.UnityPlayerActivity;
+import gal.udc.evilcorp.lookaround.util.Utils;
 
 /**
  * Created by marcos on 20/04/17.
@@ -33,7 +34,7 @@ public class MapFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static Context mContext = null;
     MapView mMapView;
-    private GoogleMap googleMap;
+    public static GoogleMap googleMap;
 
     public MapFragment() {
     }
@@ -49,6 +50,20 @@ public class MapFragment extends Fragment {
         MapFragment.mContext = mContext;
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public static void update(float lat, float lng) {
+        LatLng pos = new LatLng(lat, lng);
+        if (googleMap==null) {
+            return;
+        }
+        // For showing a move to my location button
+        googleMap.setMyLocationEnabled(true);
+        // For zooming automatically to the location of the marker
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(pos).zoom(Utils.ZOOM_CAMERA).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
     }
 
     @Override
@@ -73,14 +88,6 @@ public class MapFragment extends Fragment {
 
                 // For showing a move to my location button
                 googleMap.setMyLocationEnabled(true);
-
-                // For dropping a marker at a point on the Map
-                LatLng sydney = new LatLng(-34, 151);
-                googleMap.addMarker(new MarkerOptions().position(sydney).title("Marker Title").snippet("Marker Description"));
-
-                // For zooming automatically to the location of the marker
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(sydney).zoom(12).build();
-                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             }
         });
 

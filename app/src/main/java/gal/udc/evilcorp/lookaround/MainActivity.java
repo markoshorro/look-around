@@ -1,52 +1,27 @@
 package gal.udc.evilcorp.lookaround;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import android.view.animation.RotateAnimation;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 import gal.udc.evilcorp.lookaround.tabs.EventFragment;
 import gal.udc.evilcorp.lookaround.tabs.MapFragment;
@@ -62,6 +37,7 @@ import gal.udc.evilcorp.lookaround.util.Utils;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class MainActivity extends AppCompatActivity {
+    // debug purpose
     private static final String TAG = "MainActivity";
 
     /**
@@ -101,49 +77,33 @@ public class MainActivity extends AppCompatActivity {
 
         // First time launch!
         boolean isFirstTime = PreferencesManager.isFirst(MainActivity.this);
-
         if (isFirstTime) {
-            // launch firstlaunchactivity
             startActivity(new Intent(MainActivity.this, FirstLaunch.class));
         }
 
-        /*receiver = new BroadcastReceiver() {
+        // start service
+        Intent intent = new Intent(this, GeolocationService.class);
+        startService(intent);
+
+        // listener
+        receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String s = intent.getStringExtra(GeolocationService.GEO_MESSAGE);
-                Log.e(TAG, "received: " + s);
-                String[] addr = s.split(":::::");
-                if (addr.length>=2) {
-                        textView.setText(addr[0] + ", " + addr[1]);
-                } else {
-                        textView.setText(addr[0]);
-                }
-
-                if(textView.getParent() == null) {
-                    rootView.addView(textView);
+                String[] tokens = s.split(Utils.MSG_DELIMITER);
+                Log.e(TAG, tokens.toString());
+                switch(tokens[0]) {
+                    case Utils.MSG_LOC: break;
+                    case Utils.MSG_MAP:
+                        MapFragment.update(Float.valueOf(tokens[1]),
+                                Float.valueOf(tokens[2])); break;
+                    case Utils.MSG_EVT: break;
+                    case Utils.MSG_ERR:
+                    case Utils.MSG_NA: break;
+                    default: break;
                 }
             }
-        };*/
-    }
-
-    /*
-        This is a temporal method...
-     */
-    private View getLeafView(View view) {
-        if (view instanceof ViewGroup) {
-            ViewGroup vg = (ViewGroup)view;
-            for (int i = 0; i < vg.getChildCount(); ++i) {
-                View chview = vg.getChildAt(i);
-                View result = getLeafView(chview);
-                if (result != null)
-                    return result;
-            }
-            return null;
-        }
-        else {
-            Log.d(TAG, "Found leaf view");
-            return view;
-        }
+        };
     }
 
     /**

@@ -156,12 +156,16 @@ public class GeolocationService extends Service {
                 getPlacesByLocation();
 
                 try {
+                    // address
                     addresses = geocoder.getFromLocation(lat, lng, 1);
                     String address = addresses.get(0).getAddressLine(0);
                     String city = addresses.get(0).getLocality();
-                    // Update the title of the MainActivity to set the location
-                    Log.e(TAG, "sendingResult...");
-                    sendResult(address + ":::::" + city);
+                    sendResult(Utils.MSG_LOC + Utils.MSG_DELIMITER +
+                            address + Utils.MSG_DELIMITER + city);
+
+                    // coordinates
+                    sendResult(Utils.MSG_MAP + Utils.MSG_DELIMITER +
+                            lat + Utils.MSG_DELIMITER + lng);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -231,7 +235,7 @@ public class GeolocationService extends Service {
             checkProviders();
             if (!isGPSEnabled && !isNetworkEnabled) {
                 Toast.makeText(this, getString(R.string.providers_not_available), Toast.LENGTH_SHORT).show();
-                sendResult(getString(R.string.location_not_available));
+                sendResult(Utils.MSG_NA+ Utils.MSG_DELIMITER + getString(R.string.location_not_available));
             } else {
                 if (isNetworkEnabled) {
                     if (!Utils.checkPermission(this)) {
@@ -289,7 +293,7 @@ public class GeolocationService extends Service {
     {
         if(actualLocation == null)
         {
-            sendResult(getString(R.string.location_not_available));
+            sendResult(Utils.MSG_NA + Utils.MSG_DELIMITER + getString(R.string.location_not_available));
         }
         else
         {
@@ -328,17 +332,17 @@ public class GeolocationService extends Service {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            sendResult(response.getString("data"));
+                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER + response.getString("data"));
                             parsePlaces(response);
                         } catch (JSONException e) {
-                            sendResult("Error into response");
+                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error into response");
                         }
                         Log.e(TAG, "Get places response: " + response);
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendResult("Error to get places from Facebook");
+                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error to get places from Facebook");
                     }
         });
 
@@ -405,10 +409,10 @@ public class GeolocationService extends Service {
                     @Override
                     public void onResponse(JSONObject response) {
                         try {
-                            sendResult(response.getString("data"));
+                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER + response.getString("data"));
                             parseEvents(response);
                         } catch (JSONException e) {
-                            sendResult("Error into response");
+                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error into response");
                         }
                         Log.e(TAG, "Get events response: " + response);
                     }
