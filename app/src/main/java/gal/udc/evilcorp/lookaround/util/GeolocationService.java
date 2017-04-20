@@ -298,19 +298,19 @@ public class GeolocationService extends Service {
         else
         {
             // actual location request
-            //get("search?type=place&center="+actualLocation.getLatitude()+","+actualLocation.getLongitude()+
-            //        "&distance=100&limit=10&access_token=EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
+            requestPlaces("search?type=place&center=" + actualLocation.getLatitude() + "," + actualLocation.getLongitude() +
+                    "&distance=100&limit=10&access_token=" + Utils.ACCESS_TOKEN_FB);
 
             // especific location to test
-            requestPlaces("search?type=place&center=43.368065,-8.400727" +
-                    "&distance=100&limit=10&access_token=EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
+            //requestPlaces("search?type=place&center=43.368065,-8.400727" +
+            //        "&distance=100&limit=10&access_token=" + Utils.ACCESS_TOKEN_FB);
         }
     }
 
 
     private void requestPlaces(String query)
     {
-        String url ="https://graph.facebook.com/"+query;
+        String url = Utils.URL_FB + query;
 
         HurlStack hurlStack = new HurlStack() {
             @Override
@@ -387,7 +387,7 @@ public class GeolocationService extends Service {
 
     private void requestEvents(String query)
     {
-        String url ="https://graph.facebook.com/"+query;
+        String url = Utils.URL_FB + query;
 
         HurlStack hurlStack = new HurlStack() {
             @Override
@@ -419,7 +419,7 @@ public class GeolocationService extends Service {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendResult("Error to get events from Facebook");
+                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER + "Error to get events from Facebook");
                     }
                 }
         )
@@ -427,7 +427,7 @@ public class GeolocationService extends Service {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
-                params.put("Authorization", "OAuth EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD");
+                params.put("Authorization", Utils.AUTH_CODE);
                 return params;
             }
         };

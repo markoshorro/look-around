@@ -24,6 +24,11 @@ public class Utils {
     // map
     public static int ZOOM_CAMERA = 17;
 
+    // events
+    public static final String ACCESS_TOKEN_FB = "EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD";
+    public static final String AUTH_CODE = "OAuth EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD";
+    public static final String URL_FB = "https://graph.facebook.com/";
+
     /**
      * Check whether the app has permissions or not
      * @param context
