@@ -24,6 +24,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyC1ockdCC7tFNJ6UrVeQOkZ5koN8qt1xFk"/>
+
         <!-- main activity -->
         <!-- https://stackoverflow.com/questions/5913130/dont-reload-application-when-orientation-changes -->
         <!-- launchMode = singleTask to avoid multiple instances and keep in the stack -->
