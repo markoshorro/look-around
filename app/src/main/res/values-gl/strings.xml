@@ -24,4 +24,5 @@
     <string name="review_permissions">Necesítanse algúns permisos que foron denegados</string>
     <string name="action_settings">Axustes</string>
     <string name="action_about">Acerca</string>
+    <string name="vuforia">Vuforia</string>
 </resources>
