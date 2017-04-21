@@ -63,7 +63,8 @@
             android:name="gal.udc.evilcorp.lookaround.UnityPlayerActivity"
             android:label="@string/vuforia"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
+            android:process=":unityplayer"
             android:parentActivityName=".MainActivity">
 
             <meta-data
