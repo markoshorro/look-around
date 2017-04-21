@@ -6,13 +6,20 @@ package gal.udc.evilcorp.lookaround.tabs;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.unity3d.player.UnityPlayer;
 
 import gal.udc.evilcorp.lookaround.MainActivity;
 import gal.udc.evilcorp.lookaround.R;
@@ -25,70 +32,64 @@ import static android.app.Activity.RESULT_OK;
  * A placeholder fragment containing a simple view.
  */
 public class VuforiaFragment extends Fragment {
-    private boolean mResumed;
+    private final static String TAG = "VuforiaFragment";
+
+    private boolean setWindows = false;
+
+    protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
+    FrameLayout fl_forUnity;
+
+    /**
+     * Lifecycle methods
+     */
 
     @Override
-    public final void setUserVisibleHint(final boolean isVisibleToUser) {
-        final boolean needUpdate = mResumed && isVisibleToUser != getUserVisibleHint();
-        super.setUserVisibleHint(isVisibleToUser);
-        if (needUpdate) {
-            if (isVisibleToUser) {
-                this.onVisible();
-            } else {
-                this.onInvisible();
-            }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        getActivity().getWindow().setFormat(PixelFormat.RGBX_8888); // <--- This makes xperia play happy
+
+        mUnityPlayer = new UnityPlayer(getActivity());
+        View rootView = inflater.inflate(R.layout.fragment_ar, container, false);
+        this.fl_forUnity = (FrameLayout) rootView.findViewById(R.id.fl_forUnity);
+        //Add the mUnityPlayer view to the FrameLayout, and set it to fill all the area available
+        this.fl_forUnity.addView(mUnityPlayer.getView(),
+                FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+
+        mUnityPlayer.requestFocus();
+        Log.e(TAG, "windowFocusChangedTrue");
+
+        if (!setWindows) {
+            mUnityPlayer.windowFocusChanged(true);//First fix Line
+            setWindows = true;
         }
+
+        return rootView;
     }
 
     @Override
     public final void onResume() {
         super.onResume();
-        mResumed = true;
-        if (this.getUserVisibleHint()) {
-            this.onVisible();
-        }
+        mUnityPlayer.resume();
+        Log.e(TAG, "onResume");
     }
 
     @Override
     public final void onPause() {
         super.onPause();
-        mResumed = false;
-        this.onInvisible();
-    }
-
-    /**
-     * Returns true if the fragment is in resumed state and userVisibleHint was set to true
-     *
-     * @return true if resumed and visible
-     */
-    protected final boolean isResumedAndVisible() {
-        return mResumed && getUserVisibleHint();
-    }
-
-    /**
-     * Called when onResume was called and userVisibleHint is set to true or vice-versa
-     */
-    protected void onVisible() {
-        getActivity().startActivityForResult(
-                new Intent(getActivity(), UnityPlayerActivity.class),
-                Utils.LAUNCH_AR);
-    }
-
-    /**
-     * Called when onStop was called or userVisibleHint is set to false
-     */
-    protected void onInvisible() {
+        mUnityPlayer.pause();
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // Check which request we're responding to
-        if (requestCode == Utils.LAUNCH_AR) {
-            // Make sure the request was successful
-            if (resultCode == RESULT_OK) {
-                getFragmentManager().popBackStackImmediate();
-            }
-        }
+    public void onDestroy() {
+        mUnityPlayer.quit();
+        super.onDestroy();
+        Log.e(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.e(TAG, "onDestroyView");
     }
 
     /**
@@ -115,12 +116,29 @@ public class VuforiaFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-        return rootView;
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.e(TAG, "setUserVisibleHint");
+        mUnityPlayer.configurationChanged(newConfig);
     }
 }
+
+
+//    @Override
+//    public final void setUserVisibleHint(final boolean isVisibleToUser) {
+//        super.setUserVisibleHint(isVisibleToUser);
+//        if (mUnityPlayer==null) {
+//            return;
+//        }
+//        Log.e(TAG, "setUserVisibleHint");
+//
+//        if (isVisibleToUser) {
+//            Log.e(TAG, "setUserVisibleHintVisible");
+//
+//            mUnityPlayer.windowFocusChanged(true);//First fix Line
+//        } else {
+//            Log.e(TAG, "setUserVisibleHintInVisible");
+//
+//            mUnityPlayer.windowFocusChanged(false);//First fix Line
+//        }
+//    }
