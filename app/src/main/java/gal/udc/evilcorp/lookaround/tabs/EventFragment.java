@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import gal.udc.evilcorp.lookaround.R;
@@ -23,6 +26,9 @@ public class EventFragment extends Fragment {
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
     private static Context mContext = null;
+    private static FragmentActivity event_fragment;
+    private static ListView eventLeadsList;
+    private static ArrayAdapter<String> eventLeadsAdapter;
 
     public EventFragment() {
     }
@@ -44,9 +50,23 @@ public class EventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-        textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+        View rootView = inflater.inflate(R.layout.fragment_events, container, false);
+        eventLeadsList = (ListView) rootView.findViewById(R.id.EventListView);
+        event_fragment = getActivity();
+
         return rootView;
+    }
+
+    public static void update(String[] items) {
+
+        if (eventLeadsList==null) {
+            return;
+        }
+        eventLeadsAdapter = new ArrayAdapter<>(
+                event_fragment,
+                android.R.layout.simple_list_item_1,
+                items);
+
+        eventLeadsList.setAdapter(eventLeadsAdapter);
     }
 }

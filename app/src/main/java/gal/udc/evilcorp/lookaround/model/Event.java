@@ -6,13 +6,28 @@ package gal.udc.evilcorp.lookaround.model;
 
 public class Event {
 
+    private String id;
+
     private String name;
 
     private String description;
 
-    public Event(String name, String description) {
+    private String place;
+
+
+    public Event(String id, String name, String description, String place) {
+        this.id = id;
         this.name = name;
         this.description = description;
+        this.place = place;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -31,12 +46,17 @@ public class Event {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Event{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+    public String getPlace() {
+        return place;
     }
 
+    public void setPlace(String place) {
+        this.place = place;
+    }
+
+    @Override
+    public String toString() {
+        return "Nombre: '" + name + "\n" +
+                "Local: '" + place;
+    }
 }

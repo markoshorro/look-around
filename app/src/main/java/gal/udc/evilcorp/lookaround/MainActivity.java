@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Arrays;
+
 import gal.udc.evilcorp.lookaround.tabs.EventFragment;
 import gal.udc.evilcorp.lookaround.tabs.MapFragment;
 import gal.udc.evilcorp.lookaround.tabs.VuforiaFragment;
@@ -102,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
                     case Utils.MSG_MAP:
                         MapFragment.update(Float.valueOf(tokens[1]),
                                 Float.valueOf(tokens[2])); break;
-                    case Utils.MSG_EVT: break;
+                    case Utils.MSG_EVT:
+                        EventFragment.update(Arrays.copyOfRange(tokens, 1, tokens.length));
+                        break;
                     case Utils.MSG_ERR:
                     case Utils.MSG_NA:
                         Utils.buildAlertMessageNoGps(mActivity);

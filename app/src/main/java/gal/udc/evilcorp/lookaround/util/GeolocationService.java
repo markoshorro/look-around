@@ -82,6 +82,7 @@ public class GeolocationService extends Service {
     private LocationListener locationListener;
 
     ArrayList<Place> places = new ArrayList<>();
+    ArrayList<Event> events = new ArrayList<Event>();
 
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
@@ -302,12 +303,12 @@ public class GeolocationService extends Service {
         {
             // actual location request
             requestPlaces("search?type=place&center=" + actualLocation.getLatitude() + ","
-                    + actualLocation.getLongitude() + "&distance=100&limit=10&access_token=" +
+                    + actualLocation.getLongitude() + "&distance=100&limit=5&access_token=" +
                     Utils.ACCESS_TOKEN_FB);
 
             // especific location to test
             //requestPlaces("search?type=place&center=43.368065,-8.400727" +
-            //        "&distance=100&limit=10&access_token=" + Utils.ACCESS_TOKEN_FB);
+            //        "&distance=100&limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);
         }
     }
 
@@ -338,14 +339,7 @@ public class GeolocationService extends Service {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER +
-                                    response.getString("data"));
-                            parsePlaces(response);
-                        } catch (JSONException e) {
-                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
-                                    "Error into response");
-                        }
+                        parsePlaces(response);
                         Log.e(TAG, "Get places response: " + response);
                     }
                 }, new Response.ErrorListener() {
@@ -394,6 +388,7 @@ public class GeolocationService extends Service {
             {
                 String query = places.get(i).getId()+"/events";
                 requestEvents(query);
+                places.remove(i);
             }
         }
     }
@@ -425,14 +420,7 @@ public class GeolocationService extends Service {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        try {
-                            sendResult(Utils.MSG_EVT + Utils.MSG_DELIMITER +
-                                    response.getString("data"));
-                            parseEvents(response);
-                        } catch (JSONException e) {
-                            sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
-                                    "Error into response");
-                        }
+                        parseEvents(response);
                         Log.e(TAG, "Get events response: " + response);
                     }
                 }, new Response.ErrorListener() {
@@ -465,19 +453,28 @@ public class GeolocationService extends Service {
     private void parseEvents(JSONObject json)
     {
         JSONArray jsonList = null;
-        ArrayList<Event> events = new ArrayList<Event>();
+        ArrayList<Event> newEvents = new ArrayList<>();
         try {
             jsonList = json.getJSONArray("data");
             for(int i=0;i<jsonList.length();i++)
             {
                 JSONObject obj = jsonList.getJSONObject(i);
-                Event event = new Event(obj.getString("name"), obj.getString("description"));
+                Event event = new Event(obj.getString("id"), obj.getString("name"), obj.getString("description"), obj.getJSONObject("place").getString("name"));
                 events.add(event);
             }
+            String msg = Utils.MSG_EVT;
+            for (int i=0;i<events.size();i++)
+            {
+                msg += Utils.MSG_DELIMITER + events.get(i).toString();
+            }
+            sendResult(msg);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
+
+
 
     /**
      * This method verfies hostname
