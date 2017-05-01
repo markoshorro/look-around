@@ -1,4 +1,4 @@
-![LookAround](https://raw.githubusercontent.com/markoshorro/look-around/master/img/lookcover.png?token=AE7ETGbvJM9btsNvGnpWjLr2bm1Q6Te7ks5Y_RA0wA%3D%3D)
+![LookAround](./img/lookcover.png)
 Esta aplicación intenta mostrar de manera gráfica, integrándose con el entorno puntos de interés como museos, edificios relevantes, locales de ocio u otros en función de la localización del usuario.
 Respondiendo a las cinco W’s:
   * **_What?_** - Una aplicación para la integración del entorno con información relevante en base a la ubicación del usuario
