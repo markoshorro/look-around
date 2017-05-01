@@ -132,7 +132,8 @@ public class MainActivity extends AppCompatActivity {
                         {
                             tokens[i] = events.get(i).toString();
                         }
-                        EventFragment.update(tokens);
+                       // EventFragment.update(tokens);
+                        EventFragment.showList(events);
                         MapFragment.update(events);
                         break;
                 }
