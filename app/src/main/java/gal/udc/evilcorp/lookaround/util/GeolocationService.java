@@ -159,6 +159,7 @@ public class GeolocationService extends Service {
              */
             @Override
             public void onLocationChanged(Location location) {
+                Log.e(TAG, "..................................onLocationChanged!!!!!!!!!!!!!!!!!!!!!");
                 actualLocation = location;
                 double lat = (location.getLatitude());
                 double lng = (location.getLongitude());
@@ -221,11 +222,12 @@ public class GeolocationService extends Service {
                 updateLocation();
             }
         };
+
         if (Utils.checkPermission(this)) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
-                    locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-                    locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Utils.MIN_TIME,
+                    Utils.MIN_DIST, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utils.MIN_TIME,
+                    Utils.MIN_DIST, locationListener);
         }
 
     }
@@ -255,14 +257,16 @@ public class GeolocationService extends Service {
                         return;
                     }
                     Log.d("Network", "Network Enabled");
-                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60, 1,
-                            locationListener);
+                    locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                            Utils.MIN_TIME, Utils.MIN_DIST, locationListener);
                 }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
                     if (actualLocation == null) {
-                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60, 1,
-                                locationListener);
+                        locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                                Utils.MIN_TIME, Utils.MIN_DIST, locationListener);
                     }
                 }
             }
