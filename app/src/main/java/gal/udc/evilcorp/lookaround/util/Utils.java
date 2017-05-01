@@ -27,6 +27,11 @@ public class Utils {
     public static final String MSG_NA = "notAvailableMsg";
     public static final String MSG_DELIMITER = "::::";
 
+    // to control frequency
+    public static final long MIN_TIME = 10*1000;
+    public static final float MIN_DIST = 25;
+
+
     // map
     public static int ZOOM_CAMERA = 17;
 
