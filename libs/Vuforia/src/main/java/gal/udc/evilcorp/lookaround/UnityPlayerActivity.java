@@ -1,7 +1,6 @@
 package gal.udc.evilcorp.lookaround;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.PixelFormat;
 import android.os.Bundle;

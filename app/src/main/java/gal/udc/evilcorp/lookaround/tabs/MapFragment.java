@@ -1,13 +1,11 @@
 package gal.udc.evilcorp.lookaround.tabs;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -18,8 +16,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import gal.udc.evilcorp.lookaround.R;
-import gal.udc.evilcorp.lookaround.UnityPlayerActivity;
+import gal.udc.evilcorp.lookaround.model.Event;
 import gal.udc.evilcorp.lookaround.util.Utils;
 
 /**
@@ -36,7 +38,11 @@ public class MapFragment extends Fragment {
     MapView mMapView;
     public static GoogleMap googleMap;
 
+    // Lista de elementos que no se pueden repetir, el objeto debe implementar hashCode
+    private static Set<Event> loadedEvents;
+
     public MapFragment() {
+        this.loadedEvents = new HashSet<Event>();
     }
 
     /**
@@ -64,6 +70,27 @@ public class MapFragment extends Fragment {
                 .target(pos).zoom(Utils.ZOOM_CAMERA).build();
         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 
+    }
+
+    public static void update(final List<Event> events)
+    {
+        for(final Event event: events) {
+            if (!loadedEvents.contains(event)) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(event.getLatitude(), event.getLongitude()))
+                        .title(event.getDescription()));
+                loadedEvents.add(event);
+            }
+        }
+        googleMap.setMyLocationEnabled(true);
+        if (!loadedEvents.isEmpty()) {
+            final Event firstEvent = loadedEvents.iterator().next();
+            final LatLng latLng = new LatLng(firstEvent.getLatitude(), firstEvent.getLongitude());
+            // For zooming automatically to the location of the marker
+            CameraPosition cameraPosition = new CameraPosition.Builder()
+                    .target(latLng).zoom(Utils.ZOOM_CAMERA).build();
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        }
     }
 
     @Override

@@ -2,13 +2,12 @@ package gal.udc.evilcorp.lookaround.util;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
-import android.app.AlertDialog;
-import android.view.WindowManager;
 
 
 /**
@@ -18,6 +17,12 @@ import android.view.WindowManager;
 public class Utils {
     // debugging purposes
     private static final String TAG = "Utils";
+
+    public static final String EVENT_TYPE = "EVENT_TYPE";
+    public static final String EVENT_CONTENT = "EVENT_CONTENT";
+
+    public static final int NO_EVENT = 0;
+    public static final int NEW_EVENT = 1;
 
     // for messages
     public static final String MSG_EVT = "evtMsg";

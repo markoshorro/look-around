@@ -1,10 +1,8 @@
 package gal.udc.evilcorp.lookaround.util;
 
-import android.Manifest;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -12,10 +10,9 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -26,12 +23,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -47,9 +44,11 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -82,7 +81,7 @@ public class GeolocationService extends Service {
     private LocationListener locationListener;
 
     ArrayList<Place> places = new ArrayList<>();
-    ArrayList<Event> events = new ArrayList<Event>();
+    private Set<Event> events = new HashSet<Event>();
 
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
@@ -130,6 +129,17 @@ public class GeolocationService extends Service {
         Intent intent = new Intent(GEO_RESULT);
         if (message != null)
             intent.putExtra(GEO_MESSAGE, message);
+        broadcaster.sendBroadcast(intent);
+    }
+
+
+    private void sendResult(final int eventType, final Parcelable events) {
+        broadcaster = LocalBroadcastManager.getInstance(this);
+
+        Intent intent = new Intent(GEO_RESULT);
+        intent.putExtra(Utils.EVENT_TYPE, eventType);
+        intent.putExtra(Utils.EVENT_CONTENT, events);
+
         broadcaster.sendBroadcast(intent);
     }
 
@@ -452,23 +462,27 @@ public class GeolocationService extends Service {
      */
     private void parseEvents(JSONObject json)
     {
-        JSONArray jsonList = null;
-        ArrayList<Event> newEvents = new ArrayList<>();
         try {
-            jsonList = json.getJSONArray("data");
-            for(int i=0;i<jsonList.length();i++)
+            final List<Event> newEvents = new ArrayList<Event>();
+            JSONArray jsonList = json.getJSONArray("data");
+            for(int i = 0;i < jsonList.length(); i++)
             {
                 JSONObject obj = jsonList.getJSONObject(i);
-                Event event = new Event(obj.getString("id"), obj.getString("name"), obj.getString("description"), obj.getJSONObject("place").getString("name"));
-                events.add(event);
-            }
-            String msg = Utils.MSG_EVT;
-            for (int i=0;i<events.size();i++)
-            {
-                msg += Utils.MSG_DELIMITER + events.get(i).toString();
-            }
-            sendResult(msg);
+                final Event event = new Event();
+                event.setId(obj.getString("id"));
+                event.setName(obj.getString("name"));
+                event.setDescription(obj.getString("description"));
+                event.setPlace(obj.getJSONObject("place").getString("name"));
+                final JSONObject location = obj.getJSONObject("place").getJSONObject("location");
+                event.setLatitude(location.getDouble("latitude"));
+                event.setLongitude(location.getDouble("longitude"));
 
+                newEvents.add(event);
+            }
+            events.addAll(newEvents);
+            if (events.size() > 0) {
+                sendResult(Utils.NEW_EVENT, Parcels.wrap(new ArrayList<Event>(events)));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
