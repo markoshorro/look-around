@@ -23,7 +23,7 @@
     <string name="distance">100</string>
     <string name="limit">10</string>
     <string name="dialog_ok">OK</string>
-    <string name="dialog_cancel" >Cancel</string>
+    <string name="dialog_cancel">Cancel</string>
     <string name="need_permission">You need permission to</string>
     <string name="review_permissions">Some permissions are denied</string>
     <string name="action_settings">Settings</string>
@@ -34,4 +34,53 @@
     <string name="section_two">EVENTS</string>
     <string name="section_three">AR</string>
     <string name="map_current_pos">Current position</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="err_msg">Something went wrong</string>
+    <string name="pref_title_sync_dist">Sync distance</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>30 seconds</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>5 minutes</item>
+        <item>10 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>30000</item>
+        <item>60000</item>
+        <item>120000</item>
+        <item>300000</item>
+        <item>600000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
+
+    <string-array name="pref_sync_dist_titles">
+        <item>10 m</item>
+        <item>25 m</item>
+        <item>50 m</item>
+        <item>100 m</item>
+        <item>200 m</item>
+    </string-array>
+
+    <string-array name="pref_sync_dist_values">
+        <item>10</item>
+        <item>25</item>
+        <item>50</item>
+        <item>100</item>
+        <item>200</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="pref_header_general">General</string>
+
 </resources>

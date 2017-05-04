@@ -16,28 +16,48 @@
     <!-- feature -->
     <uses-feature android:name="android.hardware.location.gps" />
     <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:glEsVersion="0x00020000" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.touchscreen.multitouch.distinct"
+        android:required="false" />
 
-    <!-- application -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- application -->
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_lookaround" tools:replace="android:icon,android:theme"
+        android:icon="@mipmap/ic_lookaround"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
-        <meta-data android:name="com.google.android.gms.version"
+        android:theme="@style/AppTheme"
+        tools:replace="android:icon,android:theme">
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyD9QGPEmlFMnoiqmB0Cgq-AAUpgLACf-vY"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyD9QGPEmlFMnoiqmB0Cgq-AAUpgLACf-vY" />
 
         <!-- main activity -->
         <!-- https://stackoverflow.com/questions/5913130/dont-reload-application-when-orientation-changes -->
         <!-- launchMode = singleTask to avoid multiple instances and keep in the stack -->
-        <activity android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:launchMode="singleTask"
+        <activity
+            android:name=".MainActivity"
             android:configChanges="orientation|screenSize"
-            android:noHistory="false">
+            android:launchMode="singleTask"
+            android:noHistory="false"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,13 +67,12 @@
 
         <!-- first launch -->
         <activity
-            android:name="gal.udc.evilcorp.lookaround.util.FirstLaunch"
+            android:name=".util.FirstLaunch"
             android:label="@string/app_intro"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"
             android:launchMode="singleInstance"
-            android:parentActivityName=".MainActivity">
-
+            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
@@ -63,14 +82,19 @@
             Because android:exported is set to "false",
             the service is only available to this app.
         -->
-        <service android:name=".util.GeolocationService"
-            android:exported="false"/>
+        <service
+            android:name=".util.GeolocationService"
+            android:exported="false" />
 
+        <!-- settings activity -->
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:label="@string/title_activity_settings"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gal.udc.evilcorp.lookaround.MainActivity" />
+        </activity>
     </application>
-    <uses-feature android:glEsVersion="0x00020000" />
-    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
-    <uses-feature android:name="android.hardware.camera.front" android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen.multitouch" android:required="false" />
-    <uses-feature android:name="android.hardware.touchscreen.multitouch.distinct" android:required="false" />
+
 </manifest>

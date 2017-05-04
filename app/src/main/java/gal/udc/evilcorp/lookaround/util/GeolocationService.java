@@ -3,6 +3,7 @@ package gal.udc.evilcorp.lookaround.util;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -11,6 +12,8 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Parcelable;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntegerRes;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -73,6 +76,9 @@ public class GeolocationService extends Service {
     // for debugging
     private static final String TAG = "GeoLocationService";
 
+    private static int SYNC_DIST;
+    private static int SYNC_FREQ;
+
     private LocationManager locationManager;
     private LocalBroadcastManager broadcaster = null;
     private Location actualLocation;
@@ -86,6 +92,10 @@ public class GeolocationService extends Service {
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
     static final public String GEO_MESSAGE = "gal.udc.evilcorp.lookaround.util.COPA_MSG";
+
+    private SharedPreferences mPrefs;
+    private SharedPreferences.OnSharedPreferenceChangeListener
+            mPreferenceListener;
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor
@@ -105,6 +115,29 @@ public class GeolocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        ;
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        mPreferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            @Override
+            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+                Log.e(TAG, key + ": " + sharedPreferences.getString(key, "60000"));
+                if (key.equals("sync_frequency")) {
+                    SYNC_FREQ = Integer.parseInt(sharedPreferences.getString(key, "60000"));
+                }
+                if (key.equals("sync_dist_frequency")) {
+                    SYNC_DIST = Integer.parseInt(sharedPreferences.getString(key, "100"));
+                }
+
+                if ((locationManager!=null)&&(Utils.checkPermission(getApplicationContext()))) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, SYNC_FREQ,
+                            SYNC_DIST, locationListener);
+                    locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, SYNC_FREQ,
+                            SYNC_DIST, locationListener);
+                }
+
+            }
+        };
+        mPrefs.registerOnSharedPreferenceChangeListener(mPreferenceListener);
         addListenerLocation();
         updateLocation();
         // We want this service to continue running until it is explicitly
@@ -224,10 +257,10 @@ public class GeolocationService extends Service {
         };
 
         if (Utils.checkPermission(this)) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, Utils.MIN_TIME,
-                    Utils.MIN_DIST, locationListener);
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, Utils.MIN_TIME,
-                    Utils.MIN_DIST, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, SYNC_FREQ,
+                    SYNC_DIST, locationListener);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, SYNC_FREQ,
+                    SYNC_DIST, locationListener);
         }
 
     }
@@ -259,14 +292,14 @@ public class GeolocationService extends Service {
                     Log.d("Network", "Network Enabled");
                     locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                     locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                            Utils.MIN_TIME, Utils.MIN_DIST, locationListener);
+                            SYNC_FREQ, SYNC_DIST, locationListener);
                 }
                 // if GPS Enabled get lat/long using GPS Services
                 if (isGPSEnabled) {
                     if (actualLocation == null) {
                         locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                                Utils.MIN_TIME, Utils.MIN_DIST, locationListener);
+                                SYNC_FREQ, SYNC_DIST, locationListener);
                     }
                 }
             }

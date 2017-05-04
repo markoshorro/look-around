@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Sync distance -->
+    <gal.udc.evilcorp.lookaround.view.CustomPreferenceCategory
+        android:title="@string/pref_header_data_sync"
+        android:key="pref_key_notifications">
+
+        <ListPreference
+            android:defaultValue="30000"
+            android:entries="@array/pref_sync_frequency_titles"
+            android:entryValues="@array/pref_sync_frequency_values"
+            android:key="sync_frequency"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_title_sync_frequency" />
+
+        <ListPreference
+            android:defaultValue="100"
+            android:entries="@array/pref_sync_dist_titles"
+            android:entryValues="@array/pref_sync_dist_values"
+            android:key="sync_dist_frequency"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_title_sync_dist" />
+    </gal.udc.evilcorp.lookaround.view.CustomPreferenceCategory>
+</PreferenceScreen>

@@ -25,4 +25,14 @@
     <string name="action_settings">Ajustes</string>
     <string name="action_about">Acerca</string>
     <string name="vuforia">Vuforia</string>
+    <string name="section_one">MAPA</string>
+    <string name="section_two">EVENTOS</string>
+    <string name="section_three">RA</string>
+    <string name="title_activity_settings">Ajustes</string>
+    <string name="pref_header_general">General</string>
+    <string name="pref_header_data_sync">Datos y sincronización</string>
+    <string name="pref_title_sync_dist">Distancia sincronización</string>
+    <string name="pref_title_sync_frequency">Frecuencia sincronización</string>
+    <string name="pref_title_system_sync_settings">Ajustes de sincronización</string>
+    <string name="err_msg">Ocurrió algo inesperado</string>
 </resources>

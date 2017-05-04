@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -24,12 +25,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.parceler.Parcels;
 
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.model.Event;
+import gal.udc.evilcorp.lookaround.settings.SettingsActivity;
 import gal.udc.evilcorp.lookaround.tabs.EventFragment;
 import gal.udc.evilcorp.lookaround.tabs.MapFragment;
 import gal.udc.evilcorp.lookaround.tabs.VuforiaFragment;
@@ -191,6 +194,12 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    runOnUiThread(_openSettings());
+                }
+            }).start();
             return true;
         }
 
@@ -198,8 +207,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * A placeholder fragment containing a simple view.
+     * Private method to run settings
      */
+    private Runnable _openSettings() {
+        try {
+            final Intent intent = new Intent(this, SettingsActivity.class);
+            return new Runnable() {
+                @Override
+                public void run() {
+                    startActivity(intent);
+                }
+            };
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getBaseContext(),
+                            R.string.err_msg, Toast.LENGTH_LONG).show();
+                }
+            };
+        }
+    }
+
+        /**
+         * A placeholder fragment containing a simple view.
+         */
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this

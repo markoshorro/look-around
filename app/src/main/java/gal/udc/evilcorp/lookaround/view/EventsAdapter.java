@@ -1,4 +1,4 @@
-package gal.udc.evilcorp.lookaround.tabs.view;
+package gal.udc.evilcorp.lookaround.view;
 
 import android.app.Activity;
 import android.content.Context;

@@ -16,7 +16,7 @@ import java.util.List;
 
 import gal.udc.evilcorp.lookaround.R;
 import gal.udc.evilcorp.lookaround.model.Event;
-import gal.udc.evilcorp.lookaround.tabs.view.EventsAdapter;
+import gal.udc.evilcorp.lookaround.view.EventsAdapter;
 
 /**
  * Created by marcos on 20/04/17.
@@ -75,7 +75,6 @@ public class EventFragment extends Fragment {
 
 
     public static void showList(final List<Event> events){
-        int position = 1;
         List<HashMap<String, String>> datos = new ArrayList<HashMap<String, String>>();
         for (Event event: events) {
 

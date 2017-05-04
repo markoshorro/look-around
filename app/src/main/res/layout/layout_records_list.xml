@@ -11,9 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
-
-
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,11 +19,6 @@
             android:textStyle="bold"
             android:textSize="18sp"
             android:id="@+id/rl_name"/>
-
-
-
-
-
     </LinearLayout>
 
     <LinearLayout
@@ -34,19 +26,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"
             android:text="Estadio de Riazor"
             android:id="@+id/rl_local"/>
-
-
-
-
-
     </LinearLayout>
 
 </LinearLayout>
