@@ -1,6 +1,5 @@
 package gal.udc.evilcorp.lookaround.tabs;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,33 +28,25 @@ import gal.udc.evilcorp.lookaround.util.Utils;
  */
 
 public class MapFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    private static Context mContext = null;
+
+    private static final Fragment Instance = new MapFragment();
+
     MapView mMapView;
     public static GoogleMap googleMap;
 
-    // Lista de elementos que no se pueden repetir, el objeto debe implementar hashCode
+    // set of elements that can not be duplicated, hashcode needed
     private static Set<Event> loadedEvents;
 
-    public MapFragment() {
-        this.loadedEvents = new HashSet<Event>();
+    /**
+     * Singleton pattern
+     * @return
+     */
+    public static Fragment getInstance() {
+        return Instance;
     }
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static MapFragment newInstance(int sectionNumber, Context mContext) {
-        MapFragment fragment = new MapFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        MapFragment.mContext = mContext;
-        fragment.setArguments(args);
-        return fragment;
+    public MapFragment() {
+        this.loadedEvents = new HashSet<>();
     }
 
     public static void update(float lat, float lng) {

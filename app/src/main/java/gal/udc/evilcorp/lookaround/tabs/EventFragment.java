@@ -1,6 +1,5 @@
 package gal.udc.evilcorp.lookaround.tabs;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -23,31 +22,21 @@ import gal.udc.evilcorp.lookaround.view.EventsAdapter;
  */
 
 public class EventFragment extends Fragment {
-    /**
-     * The fragment argument representing the section number for this
-     * fragment.
-     */
-    private static final String ARG_SECTION_NUMBER = "section_number";
-    private static Context mContext = null;
+    private static final Fragment Instance = new EventFragment();
+
     private static FragmentActivity event_fragment;
     private static ListView eventLeadsList;
     private static ArrayAdapter<String> eventLeadsAdapter;
 
-    public EventFragment() {
+    /**
+     * Singleton pattern
+     * @return
+     */
+    public static Fragment getInstance() {
+        return Instance;
     }
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static EventFragment newInstance(int sectionNumber, Context mContext) {
-        EventFragment fragment = new EventFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-        EventFragment.mContext = mContext;
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public EventFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

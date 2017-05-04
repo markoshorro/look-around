@@ -82,7 +82,7 @@ public class EventsAdapter extends BaseAdapter {
         TextView name = (TextView)vi.findViewById(R.id.rl_name);
         TextView local = (TextView)vi.findViewById(R.id.rl_local);
 
-        HashMap<String, String> datos = new HashMap<String, String>();
+        HashMap<String, String> datos;
         datos = data.get(position);
 
         name.setText(datos.get(EventsAdapter.NAME));

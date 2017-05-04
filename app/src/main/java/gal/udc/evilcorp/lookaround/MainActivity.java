@@ -97,6 +97,11 @@ public class MainActivity extends AppCompatActivity {
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
+
+        // Again, SO saving our lives... how much do we owe you???
+        // https://developer.android.com/reference/android/support/v4/view/ViewPager.html#setOffscreenPageLimit%28int%29
+        mViewPager.setOffscreenPageLimit(2);
+
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -166,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Log.e(TAG, "onResume");
-        getFragmentManager().popBackStack();
     }
     @Override
     protected void onPause() {
@@ -249,9 +253,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-        /**
-         * A placeholder fragment containing a simple view.
-         */
+    /**
+     * A placeholder fragment containing a simple view.
+     */
     public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
@@ -293,19 +297,19 @@ public class MainActivity extends AppCompatActivity {
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+
         }
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
+
             switch (position) {
                 case 0:
-                    return MapFragment.newInstance(position + 1, getApplicationContext());
+                    return MapFragment.getInstance();
                 case 1:
-                    return EventFragment.newInstance(position + 1, getApplicationContext());
+                    return EventFragment.getInstance();
                 case 2:
-                    return VuforiaFragment.newInstance(position + 1, getApplicationContext());
+                    return VuforiaFragment.getInstance();
                 default:
                     return PlaceholderFragment.newInstance(position + 1);
             }
