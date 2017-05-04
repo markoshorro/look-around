@@ -82,5 +82,7 @@
 
     <string name="pref_title_system_sync_settings">System sync settings</string>
     <string name="pref_header_general">General</string>
+    <string name="app_credits">This app has been developed by Avelino, Eloy and Marcos in 2017.</string>
+    <string name="button_dialog_close">Close</string>
 
 </resources>

@@ -35,4 +35,7 @@
     <string name="pref_title_sync_frequency">Frecuencia sincronización</string>
     <string name="pref_title_system_sync_settings">Ajustes de sincronización</string>
     <string name="err_msg">Ocurrió algo inesperado</string>
+    <string name="app_credits">Esta aplicación fue desarrollada por Evil Corp en 2017.</string>
+    <string name="button_dialog_close">Cerrar</string>
+    <string name="map_current_pos">Posición actual</string>
 </resources>

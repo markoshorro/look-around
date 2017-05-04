@@ -40,6 +40,7 @@ import gal.udc.evilcorp.lookaround.util.FirstLaunch;
 import gal.udc.evilcorp.lookaround.util.GeolocationService;
 import gal.udc.evilcorp.lookaround.util.PreferencesManager;
 import gal.udc.evilcorp.lookaround.util.Utils;
+import gal.udc.evilcorp.lookaround.view.AboutDialog;
 
 /*
 * Main class
@@ -63,6 +64,16 @@ public class MainActivity extends AppCompatActivity {
     private static Activity mActivity;
 
     /**
+     * Fragment manager
+     */
+    private FragmentManager fragManager;
+
+    /**
+     * About dialog. It is handled with fragManager
+     */
+    private AboutDialog aboutDialog;
+
+    /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
@@ -79,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+        // Best strategy ever to manage the fragments. Thanks stackoverflow: you're the real MVP
+        fragManager = getSupportFragmentManager();
+        aboutDialog = new AboutDialog();
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -192,15 +207,19 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    runOnUiThread(_openSettings());
-                }
-            }).start();
-            return true;
+        switch (id) {
+            case R.id.action_about:
+                aboutDialog.show(fragManager, "aboutDialog");
+                return true;
+            case R.id.action_settings:
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        runOnUiThread(_openSettings());
+                    }
+                }).start();
+                return true;
+            default: break;
         }
 
         return super.onOptionsItemSelected(item);
