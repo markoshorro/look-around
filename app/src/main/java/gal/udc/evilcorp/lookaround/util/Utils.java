@@ -21,27 +21,27 @@ public class Utils {
     public static final String EVENT_TYPE = "EVENT_TYPE";
     public static final String EVENT_CONTENT = "EVENT_CONTENT";
 
-    public static final int NO_EVENT = 0;
-    public static final int NEW_EVENT = 1;
-
     // for messages
-    public static final String MSG_EVT = "evtMsg";
-    public static final String MSG_MAP = "mapMsg";
-    public static final String MSG_LOC = "locMsg";
-    public static final String MSG_ERR = "errorMsg";
-    public static final String MSG_NA = "notAvailableMsg";
-    public static final String MSG_DELIMITER = "::::";
+    public static final int MSG_NO_EVENT  = 0x0000;
+    public static final int MSG_NEW_EVENT = 0x0001;
+    public static final int MSG_MAP       = 0x0002;
+    public static final int MSG_LOC       = 0x0003;
+    public static final int MSG_PLACES    = 0x0004;
+    public static final int MSG_ERR       = 0x0020;
+    public static final int MSG_NA        = 0x0021;
+    public static final int MSG_DELIMITER = 0x0010;
+
 
     // map
     public static int ZOOM_CAMERA = 17;
 
     // events
-    public static final String ACCESS_TOKEN_FB = "EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD";
-    public static final String AUTH_CODE = "OAuth EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD";
-    public static final String URL_FB = "https://graph.facebook.com/";
-
-    // AR
-    public static final int LAUNCH_AR = 11;
+    public static final String ACCESS_TOKEN_FB =
+            "EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD";
+    public static final String AUTH_CODE =
+            "OAuth EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD";
+    public static final String URL_FB =
+            "https://graph.facebook.com/";
 
     /**
      * Check whether the app has permissions or not

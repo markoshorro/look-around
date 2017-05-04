@@ -3,6 +3,7 @@ package gal.udc.evilcorp.lookaround.tabs;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +24,10 @@ import gal.udc.evilcorp.lookaround.view.EventsAdapter;
 
 public class EventFragment extends Fragment {
     private static final Fragment Instance = new EventFragment();
+    private static final String TAG = "EVENTFRAGMENT";
 
     private static FragmentActivity event_fragment;
     private static ListView eventLeadsList;
-    private static ArrayAdapter<String> eventLeadsAdapter;
 
     /**
      * Singleton pattern
@@ -42,6 +43,8 @@ public class EventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Log.e(TAG, "onCreateView");
+
         View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         eventLeadsList = (ListView) rootView.findViewById(R.id.EventListView);
         event_fragment = getActivity();
@@ -49,31 +52,41 @@ public class EventFragment extends Fragment {
         return rootView;
     }
 
-    public static void update(String[] items) {
+    @Override
+    public final void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume");
+    }
 
-        if (eventLeadsList==null) {
-            return;
-        }
-        eventLeadsAdapter = new ArrayAdapter<>(
-                event_fragment,
-                android.R.layout.simple_list_item_1,
-                items);
+    @Override
+    public final void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause");
+    }
 
-        eventLeadsList.setAdapter(eventLeadsAdapter);
+    @Override
+    public final void onStop() {
+        super.onStop();
+        Log.e(TAG, "onStop");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.e(TAG, "onDestroy");
     }
 
 
     public static void showList(final List<Event> events){
-        List<HashMap<String, String>> datos = new ArrayList<HashMap<String, String>>();
+        List<HashMap<String, String>> eventList = new ArrayList<HashMap<String, String>>();
         for (Event event: events) {
-
-            HashMap<String, String> dato = new HashMap<String, String>();
-            dato.put(EventsAdapter.NAME, event.getName());
-            dato.put(EventsAdapter.LOCAL, event.getDescription());
-            datos.add(dato);
+            HashMap<String, String> e = new HashMap<String, String>();
+            e.put(EventsAdapter.NAME, event.getName());
+            e.put(EventsAdapter.LOCAL, event.getDescription());
+            eventList.add(e);
         }
 
-        EventsAdapter adapter = new EventsAdapter(event_fragment, datos);
+        EventsAdapter adapter = new EventsAdapter(event_fragment, eventList);
         eventLeadsList.setAdapter(adapter);
     }
 }

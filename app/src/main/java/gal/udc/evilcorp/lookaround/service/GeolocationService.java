@@ -1,4 +1,4 @@
-package gal.udc.evilcorp.lookaround.util;
+package gal.udc.evilcorp.lookaround.service;
 
 import android.app.Service;
 import android.content.Context;
@@ -46,6 +46,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +66,7 @@ import javax.net.ssl.X509TrustManager;
 import gal.udc.evilcorp.lookaround.R;
 import gal.udc.evilcorp.lookaround.model.Event;
 import gal.udc.evilcorp.lookaround.model.Place;
+import gal.udc.evilcorp.lookaround.util.Utils;
 
 /**
  * Created by eloy on 09/03/2017.
@@ -87,7 +89,7 @@ public class GeolocationService extends Service {
     private LocationListener locationListener;
 
     ArrayList<Place> places = new ArrayList<>();
-    private Set<Event> events = new HashSet<Event>();
+    private Set<Event> events = new HashSet<>();
 
     // for the messages
     static final public String GEO_RESULT = "gal.udc.evilcorp.lookaround.util.REQUEST_PROCESSED";
@@ -115,7 +117,6 @@ public class GeolocationService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        ;
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mPreferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
             @Override
@@ -152,26 +153,19 @@ public class GeolocationService extends Service {
         return null;
     }
 
+
     /**
-     * Send a broadcast message
-     *
-     * @param message Message to send
+     * Type of message sent (declared in Utils)
+     * Message sent
+     * @param msgType
+     * @param msg
      */
-    public void sendResult(String message) {
-        broadcaster = LocalBroadcastManager.getInstance(this);
-        Intent intent = new Intent(GEO_RESULT);
-        if (message != null)
-            intent.putExtra(GEO_MESSAGE, message);
-        broadcaster.sendBroadcast(intent);
-    }
-
-
-    private void sendResult(final int eventType, final Parcelable events) {
+    private void sendResult(final int msgType, final Parcelable msg) {
         broadcaster = LocalBroadcastManager.getInstance(this);
 
         Intent intent = new Intent(GEO_RESULT);
-        intent.putExtra(Utils.EVENT_TYPE, eventType);
-        intent.putExtra(Utils.EVENT_CONTENT, events);
+        intent.putExtra(Utils.EVENT_TYPE, msgType);
+        intent.putExtra(Utils.EVENT_CONTENT, msg);
 
         broadcaster.sendBroadcast(intent);
     }
@@ -192,7 +186,7 @@ public class GeolocationService extends Service {
              */
             @Override
             public void onLocationChanged(Location location) {
-                Log.e(TAG, "..................................onLocationChanged!!!!!!!!!!!!!!!!!!!!!");
+                Log.e(TAG, "onLocationChanged!");
                 actualLocation = location;
                 double lat = (location.getLatitude());
                 double lng = (location.getLongitude());
@@ -208,12 +202,12 @@ public class GeolocationService extends Service {
                     addresses = geocoder.getFromLocation(lat, lng, 1);
                     String address = addresses.get(0).getAddressLine(0);
                     String city = addresses.get(0).getLocality();
-                    sendResult(Utils.MSG_LOC + Utils.MSG_DELIMITER +
-                            address + Utils.MSG_DELIMITER + city);
+                    sendResult(Utils.MSG_LOC, Parcels.wrap(
+                            new ArrayList<>(Arrays.asList(address, city))));
 
                     // coordinates
-                    sendResult(Utils.MSG_MAP + Utils.MSG_DELIMITER +
-                            lat + Utils.MSG_DELIMITER + lng);
+                    sendResult(Utils.MSG_MAP, Parcels.wrap(
+                            new ArrayList<>(Arrays.asList(lat, lng))));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -282,7 +276,7 @@ public class GeolocationService extends Service {
             checkProviders();
             if (!isGPSEnabled && !isNetworkEnabled) {
                 Toast.makeText(this, getString(R.string.providers_not_available), Toast.LENGTH_SHORT).show();
-                sendResult(Utils.MSG_NA+ Utils.MSG_DELIMITER + getString(R.string.location_not_available));
+                sendResult(Utils.MSG_NA, Parcels.wrap(getString(R.string.location_not_available)));
             } else {
                 if (isNetworkEnabled) {
                     if (!Utils.checkPermission(this)) {
@@ -344,18 +338,18 @@ public class GeolocationService extends Service {
     {
         if(actualLocation == null)
         {
-            sendResult(Utils.MSG_NA + Utils.MSG_DELIMITER + getString(R.string.location_not_available));
+            sendResult(Utils.MSG_NA, Parcels.wrap(getString(R.string.location_not_available)));
         }
         else
         {
             // actual location request
             requestPlaces("search?type=place&center=" + actualLocation.getLatitude() + ","
-                    + actualLocation.getLongitude() + "&distance=100&limit=5&access_token=" +
-                    Utils.ACCESS_TOKEN_FB);
+                    + actualLocation.getLongitude() + "&fields=name,location&distance=100&" +
+                    "limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);
 
-            // especific location to test
+            // specific location to test
             //requestPlaces("search?type=place&center=43.368065,-8.400727" +
-            //        "&distance=100&limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);
+            //        "&fields=name,location&distance=100&limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);
         }
     }
 
@@ -392,8 +386,7 @@ public class GeolocationService extends Service {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
-                                "Error to get places from Facebook");
+                        sendResult(Utils.MSG_ERR, Parcels.wrap("Error to get places from Facebook"));
                     }
         });
 
@@ -416,9 +409,13 @@ public class GeolocationService extends Service {
             {
                 JSONObject obj = jsonList.getJSONObject(i);
                 Place place = new Place(obj.getString("id"), obj.getString("name"));
+                final JSONObject location = obj.getJSONObject("location");
+                place.setLat(location.getDouble("latitude"));
+                place.setLng(location.getDouble("longitude"));
                 places.add(place);
             }
             getEventsByPlaces();
+            sendResult(Utils.MSG_PLACES, Parcels.wrap(places));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -473,8 +470,7 @@ public class GeolocationService extends Service {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        sendResult(Utils.MSG_ERR + Utils.MSG_DELIMITER +
-                                "Error to get events from Facebook");
+                        sendResult(Utils.MSG_ERR, Parcels.wrap("Error to get events from Facebook"));
                     }
                 }
         )
@@ -518,7 +514,8 @@ public class GeolocationService extends Service {
             }
             events.addAll(newEvents);
             if (events.size() > 0) {
-                sendResult(Utils.NEW_EVENT, Parcels.wrap(new ArrayList<Event>(events)));
+                Log.e(TAG,"SEND EVENTS!!!!!!");
+                sendResult(Utils.MSG_NEW_EVENT, Parcels.wrap(new ArrayList<>(events)));
             }
         } catch (JSONException e) {
             e.printStackTrace();

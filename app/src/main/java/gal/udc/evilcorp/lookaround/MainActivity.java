@@ -5,7 +5,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -32,12 +31,13 @@ import org.parceler.Parcels;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.model.Event;
+import gal.udc.evilcorp.lookaround.model.Place;
 import gal.udc.evilcorp.lookaround.settings.SettingsActivity;
 import gal.udc.evilcorp.lookaround.tabs.EventFragment;
 import gal.udc.evilcorp.lookaround.tabs.MapFragment;
 import gal.udc.evilcorp.lookaround.tabs.VuforiaFragment;
 import gal.udc.evilcorp.lookaround.util.FirstLaunch;
-import gal.udc.evilcorp.lookaround.util.GeolocationService;
+import gal.udc.evilcorp.lookaround.service.GeolocationService;
 import gal.udc.evilcorp.lookaround.util.PreferencesManager;
 import gal.udc.evilcorp.lookaround.util.Utils;
 import gal.udc.evilcorp.lookaround.view.AboutDialog;
@@ -123,41 +123,40 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                /*
-                String s = intent.getStringExtra(GeolocationService.GEO_MESSAGE);
-                String[] tokens = s.split(Utils.MSG_DELIMITER);
-                Log.e(TAG, tokens.toString());
-                switch(tokens[0]) {
-                    case Utils.MSG_LOC: break;
+                final int messageType = intent.getIntExtra(Utils.EVENT_TYPE, Utils.MSG_NO_EVENT);
+                final Parcelable messageContent = intent.getParcelableExtra(Utils.EVENT_CONTENT);
+                String tokens[];
+                switch(messageType) {
+                    case Utils.MSG_LOC:
+                        break;
                     case Utils.MSG_MAP:
-                        MapFragment.update(Float.valueOf(tokens[1]),
-                                Float.valueOf(tokens[2])); break;
-                    case Utils.MSG_EVT:
-                        EventFragment.update(Arrays.copyOfRange(tokens, 1, tokens.length));
+                        final List<Double> coord = Parcels.unwrap(messageContent);
+                        MapFragment.update(coord.get(0), coord.get(1));
+                        break;
+                    case Utils.MSG_PLACES:
+                        final List<Place> places = Parcels.unwrap(messageContent);
+                        tokens = new String[places.size()];
+                        for (int i = 0; i < places.size(); i++) {
+                            tokens[i] = places.get(i).toString();
+                        }
+                        MapFragment.update(places, true);
+                        break;
+                    case Utils.MSG_NEW_EVENT:
+                        final List<Event> events = Parcels.unwrap(messageContent);
+                        tokens = new String[events.size()];
+                        for (int i = 0; i < events.size(); i++) {
+                            tokens[i] = events.get(i).toString();
+                        }
+                        EventFragment.showList(events);
+                        MapFragment.update(events);
                         break;
                     case Utils.MSG_ERR:
                     case Utils.MSG_NA:
                         Utils.buildAlertMessageNoGps(mActivity);
                         break;
-                    default: break;
-                }
-                */
-                final int messageType = intent.getIntExtra(Utils.EVENT_TYPE, Utils.NO_EVENT);
-                final Parcelable messageContent = intent.getParcelableExtra(Utils.EVENT_CONTENT);
-                switch(messageType) {
-                    case Utils.NO_EVENT:
+                    case Utils.MSG_NO_EVENT:
                         // Do nothing or log
-                        break;
-                    case Utils.NEW_EVENT:
-                        final List<Event> events = Parcels.unwrap(messageContent);
-                        final String[] tokens = new String[events.size()];
-                        for (int i = 0; i < events.size(); i++)
-                        {
-                            tokens[i] = events.get(i).toString();
-                        }
-                       // EventFragment.update(tokens);
-                        EventFragment.showList(events);
-                        MapFragment.update(events);
+                    default:
                         break;
                 }
             }

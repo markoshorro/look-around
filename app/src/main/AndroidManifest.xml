@@ -83,7 +83,7 @@
             the service is only available to this app.
         -->
         <service
-            android:name=".util.GeolocationService"
+            android:name=".service.GeolocationService"
             android:exported="false" />
 
         <!-- settings activity -->
