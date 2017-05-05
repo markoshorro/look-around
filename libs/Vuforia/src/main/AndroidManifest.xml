@@ -6,7 +6,6 @@
     android:versionCode="1"
     android:installLocation="preferExternal">
 
-    <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="true" />
   <uses-sdk android:minSdkVersion="14" android:targetSdkVersion="22" />
   <uses-feature android:name="android.hardware.camera" />
   <supports-screens android:smallScreens="true" android:normalScreens="true" android:largeScreens="true" android:xlargeScreens="true" android:anyDensity="true" />

@@ -53,6 +53,13 @@ public class MapFragment extends Fragment {
         this.loadedPlaces = new HashSet<>();
     }
 
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        setRetainInstance(true);
+    }
+
+
     public static void update(double lat, double lng) {
         LatLng pos = new LatLng(lat, lng);
         if (googleMap==null) {
@@ -60,6 +67,8 @@ public class MapFragment extends Fragment {
         }
         // For showing a move to my location button
         googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
         // For zooming automatically to the location of the marker
         CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(pos).zoom(Utils.ZOOM_CAMERA).build();
@@ -68,6 +77,14 @@ public class MapFragment extends Fragment {
     }
 
     public static void update(final List<Event> events) {
+        if (googleMap==null) {
+            return;
+        }
+
+        // For showing a move to my location button
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
         for(final Event event: events) {
             if (!loadedEvents.contains(event)) {
                 googleMap.addMarker(new MarkerOptions()
@@ -79,6 +96,14 @@ public class MapFragment extends Fragment {
     }
 
     public static void update(final List<Place> places, boolean val) {
+        if (googleMap==null) {
+            return;
+        }
+
+        // For showing a move to my location button
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
         for(final Place place: places) {
             if (!loadedPlaces.contains(place)) {
                 MarkerOptions marker = new MarkerOptions()
@@ -114,6 +139,8 @@ public class MapFragment extends Fragment {
 
                 // For showing a move to my location button
                 googleMap.setMyLocationEnabled(true);
+                googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
             }
         });
 

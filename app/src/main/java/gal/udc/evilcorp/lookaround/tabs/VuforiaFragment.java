@@ -46,6 +46,13 @@ public class VuforiaFragment extends Fragment {
      */
 
     @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        setRetainInstance(true);
+    }
+
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getActivity().getWindow().setFormat(PixelFormat.RGBX_8888); // <--- This makes xperia play happy
@@ -59,11 +66,6 @@ public class VuforiaFragment extends Fragment {
 
         mUnityPlayer.requestFocus();
         Log.e(TAG, "windowFocusChangedTrue");
-
-        if (!setWindows) {
-            mUnityPlayer.windowFocusChanged(true);//First fix Line
-            setWindows = true;
-        }
 
         return rootView;
     }
@@ -93,5 +95,21 @@ public class VuforiaFragment extends Fragment {
         super.onConfigurationChanged(newConfig);
         Log.e(TAG, "setUserVisibleHint");
         mUnityPlayer.configurationChanged(newConfig);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (mUnityPlayer==null)
+            return;
+
+        if (isVisibleToUser) {
+            mUnityPlayer.windowFocusChanged(true);
+            mUnityPlayer.resume();
+        }
+        else {
+            //mUnityPlayer.windowFocusChanged(false);
+            mUnityPlayer.pause();
+        }
     }
 }

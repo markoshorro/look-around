@@ -39,6 +39,21 @@ public class EventFragment extends Fragment {
 
     public EventFragment() {}
 
+    public static EventFragment newInstance() {
+        
+        Bundle args = new Bundle();
+        
+        EventFragment fragment = new EventFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstance) {
+        super.onCreate(savedInstance);
+        setRetainInstance(true);
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,6 +82,12 @@ public class EventFragment extends Fragment {
     @Override
     public final void onStop() {
         super.onStop();
+        getChildFragmentManager()
+                .beginTransaction()
+                .detach(Instance)
+                .commitAllowingStateLoss();
+
+
         Log.e(TAG, "onStop");
     }
 
@@ -74,6 +95,11 @@ public class EventFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         Log.e(TAG, "onDestroy");
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        Log.e(TAG, "onViewCreated");
     }
 
 
@@ -88,5 +114,11 @@ public class EventFragment extends Fragment {
 
         EventsAdapter adapter = new EventsAdapter(event_fragment, eventList);
         eventLeadsList.setAdapter(adapter);
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+
     }
 }

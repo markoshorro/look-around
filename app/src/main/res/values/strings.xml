@@ -84,5 +84,7 @@
     <string name="pref_header_general">General</string>
     <string name="app_credits">This app has been developed by Avelino, Eloy and Marcos in 2017.</string>
     <string name="button_dialog_close">Close</string>
+    <string name="first_launch_desc_sec_slide">You must accept the permissions asked!</string>
+    <string name="first_launch_desc_third_slide">Thanks for granting permission! Now you can use the app!</string>
 
 </resources>

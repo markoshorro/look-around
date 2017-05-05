@@ -21,15 +21,23 @@ public class Utils {
     public static final String EVENT_TYPE = "EVENT_TYPE";
     public static final String EVENT_CONTENT = "EVENT_CONTENT";
 
-    // for messages
+    // codes for messages
     public static final int MSG_NO_EVENT  = 0x0000;
     public static final int MSG_NEW_EVENT = 0x0001;
     public static final int MSG_MAP       = 0x0002;
     public static final int MSG_LOC       = 0x0003;
     public static final int MSG_PLACES    = 0x0004;
-    public static final int MSG_ERR       = 0x0020;
-    public static final int MSG_NA        = 0x0021;
-    public static final int MSG_DELIMITER = 0x0010;
+
+    public static final int MSG_DELIMITER = 0x0040;
+
+    public static final int MSG_ERR       = 0x0080;
+    public static final int MSG_NA        = 0x0081;
+
+
+    public static final int FIRST_LAUNCH_SUCCESS = 0xFFFF;
+
+    // windows close
+    public static boolean closed = true;
 
 
     // map
@@ -67,6 +75,7 @@ public class Utils {
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
+                        Utils.closed = true;
                         dialog.cancel();
                     }
                 });
