@@ -1,5 +1,7 @@
 package gal.udc.evilcorp.lookaround.tabs;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,16 +9,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.R;
 import gal.udc.evilcorp.lookaround.model.Event;
 import gal.udc.evilcorp.lookaround.view.EventsAdapter;
+import gal.udc.evilcorp.lookaround.view.ListItemActivity;
 
 /**
  * Created by marcos on 20/04/17.
@@ -29,6 +30,8 @@ public class EventFragment extends Fragment {
     private static FragmentActivity event_fragment;
     private static ListView eventLeadsList;
 
+    private Context appContext;
+
     /**
      * Singleton pattern
      * @return
@@ -37,7 +40,14 @@ public class EventFragment extends Fragment {
         return Instance;
     }
 
+    private Context context;
+    public void initialize(Context context) {
+        this.context = context;
+    }
+
+
     public EventFragment() {}
+
 
     public static EventFragment newInstance() {
         
@@ -47,6 +57,7 @@ public class EventFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+    private List<Event> events = null;
 
     @Override
     public void onCreate(Bundle savedInstance) {
@@ -104,21 +115,25 @@ public class EventFragment extends Fragment {
 
 
     public static void showList(final List<Event> events){
-        List<HashMap<String, String>> eventList = new ArrayList<HashMap<String, String>>();
-        for (Event event: events) {
-            HashMap<String, String> e = new HashMap<String, String>();
-            e.put(EventsAdapter.NAME, event.getName());
-            e.put(EventsAdapter.LOCAL, event.getDescription());
-            eventList.add(e);
-        }
 
-        EventsAdapter adapter = new EventsAdapter(event_fragment, eventList);
+        EventsAdapter adapter = new EventsAdapter(event_fragment, events);
         eventLeadsList.setAdapter(adapter);
+
+        eventLeadsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event event = (Event) parent.getItemAtPosition(position);
+                Intent myIntent = new Intent(event_fragment, ListItemActivity.class);
+                myIntent.putExtra("event_serializable", event);
+                event_fragment.startActivity(myIntent);
+            }
+        });
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-
     }
+
 }
+

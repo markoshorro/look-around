@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.R;
+import gal.udc.evilcorp.lookaround.model.Event;
 
 /**
  * Created by avelino on 01/05/2017.
@@ -24,7 +25,7 @@ public class EventsAdapter extends BaseAdapter {
     public static final String LOCAL = "ScoresAdapter.LOCAL";
 
     /* Variables privadas */
-    private List<HashMap<String, String>> data;
+    private List<Event> data;
     private LayoutInflater inflater;
 
     /**
@@ -32,7 +33,7 @@ public class EventsAdapter extends BaseAdapter {
      * @param activity          Actividad padre del ListView.
      * @param data              ArrayList con los datos a mostrar.
      */
-    public EventsAdapter(Activity activity, List<HashMap<String, String>> data) {
+    public EventsAdapter(Activity activity, List<Event> data) {
         this.data = data;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -82,11 +83,12 @@ public class EventsAdapter extends BaseAdapter {
         TextView name = (TextView)vi.findViewById(R.id.rl_name);
         TextView local = (TextView)vi.findViewById(R.id.rl_local);
 
-        HashMap<String, String> datos;
+        Event datos;
         datos = data.get(position);
 
-        name.setText(datos.get(EventsAdapter.NAME));
-        local.setText(datos.get(EventsAdapter.LOCAL));
+        name.setText(datos.getName());
+        local.setText(datos.getDescription());
         return vi;
     }
+
 }

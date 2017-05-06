@@ -343,13 +343,13 @@ public class GeolocationService extends Service {
         else
         {
             // actual location request
-            requestPlaces("search?type=place&center=" + actualLocation.getLatitude() + ","
+            /*requestPlaces("search?type=place&center=" + actualLocation.getLatitude() + ","
                     + actualLocation.getLongitude() + "&fields=name,location&distance=100&" +
-                    "limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);
+                    "limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);*/
 
             // specific location to test
-            //requestPlaces("search?type=place&center=43.368065,-8.400727" +
-            //        "&fields=name,location&distance=100&limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);
+            requestPlaces("search?type=place&center=43.368065,-8.400727" +
+                    "&fields=name,location&distance=100&limit=5&access_token=" + Utils.ACCESS_TOKEN_FB);
         }
     }
 

@@ -2,11 +2,13 @@ package gal.udc.evilcorp.lookaround.model;
 
 import org.parceler.Parcel;
 
+import java.io.Serializable;
+
 /**
  * Created by eloy on 16/04/2017.
  */
 @Parcel
-public class Event {
+public class Event implements Serializable {
 
     private String id;
 
