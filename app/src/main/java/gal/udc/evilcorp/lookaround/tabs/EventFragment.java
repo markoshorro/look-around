@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.io.Serializable;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.R;
@@ -40,11 +41,6 @@ public class EventFragment extends Fragment {
         return Instance;
     }
 
-    private Context context;
-    public void initialize(Context context) {
-        this.context = context;
-    }
-
 
     public EventFragment() {}
 
@@ -57,7 +53,6 @@ public class EventFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-    private List<Event> events = null;
 
     @Override
     public void onCreate(Bundle savedInstance) {
