@@ -1,10 +1,11 @@
 package gal.udc.evilcorp.lookaround.view;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
-
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -18,7 +19,7 @@ import gal.udc.evilcorp.lookaround.util.Utils;
  * Created by eloy on 06/05/2017.
  */
 
-public class ListItemActivity extends Activity {
+public class ListItemActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +29,9 @@ public class ListItemActivity extends Activity {
         Intent intent = getIntent();
         Event event = (Event) intent.getSerializableExtra("event_serializable");
 
+        // toolbar
+        setupActionBar();
+
         final TextView title = (TextView) findViewById(R.id.rl_title);
         TextView place = (TextView) findViewById(R.id.rl_place);
         TextView description = (TextView) findViewById(R.id.rl_description);
@@ -36,11 +40,23 @@ public class ListItemActivity extends Activity {
         place.setText(event.getName());
         description.setText(event.getDescription());
 
-        ImageLoader imageLoader = CustomVolleyRequest.getInstance(this.getApplicationContext())
-                .getImageLoader();
+        ImageLoader imageLoader = CustomVolleyRequest.getInstance(
+                this.getApplicationContext()).getImageLoader();
 
         NetworkImageView avatar = (NetworkImageView) findViewById(R.id.avatar);
-        avatar.setImageUrl(Utils.URL_FB+event.getId()+"/picture", imageLoader);
+        avatar.setImageUrl(Utils.URL_FB + event.getId() + "/picture", imageLoader);
+    }
+
+    /**
+     * Set up the {@link android.app.ActionBar}, if the API is available.
+     */
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getString(R.string.title_event));
+        }
     }
 
 }

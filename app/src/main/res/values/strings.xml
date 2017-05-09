@@ -4,7 +4,6 @@
     <string name="N">N</string>
     <string name="NW">NW</string>
     <string name="NE">NE</string>
-    <string name="E">E</string>
     <string name="S">S</string>
     <string name="SE">SW</string>
     <string name="SW">SE</string>
@@ -19,17 +18,16 @@
     <string name="first_launch_desc">This application will let you discover the most interesting points of the city!</string>
     <string name="app_intro">First Launch</string>
 
-    <string name="access_token">EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD</string>
-    <string name="distance">100</string>
-    <string name="limit">10</string>
+    <string name="access_token" translatable="false">EAAKDLq6ADLEBALZAyzDAweFgwFjRt3t6puo0wYT9RGietaH6v53XcNs7ENQ47kBu7YveZAcZBGqAlHZB7SNafY83L32tjkiBvnZCNTO6MVhAW7tRrt1Io9dZARtz5xcj5LEkxwDaCJZBUgMntzcS4oUoMEVxFjjfKsZD</string>
+    <string name="distance" translatable="false">100</string>
+    <string name="limit" translatable="false">10</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="need_permission">You need permission to</string>
     <string name="review_permissions">Some permissions are denied</string>
     <string name="action_settings">Settings</string>
     <string name="action_about">About</string>
-    <string name="section_format">Hello world %1$d</string>
-    <string name="vuforia">Vuforia</string>
+    <string name="vuforia" translatable="false">Vuforia</string>
     <string name="section_one">MAP</string>
     <string name="section_two">EVENTS</string>
     <string name="section_three">AR</string>
@@ -86,6 +84,7 @@
     <string name="button_dialog_close">Close</string>
     <string name="first_launch_desc_sec_slide">You must accept the permissions asked!</string>
     <string name="first_launch_desc_third_slide">Thanks for granting permission! Now you can use the app!</string>
-    <string name="title_activity_list_item">ListItem</string>
+    <string name="item_view_descr">Description</string>
+    <string name="title_event">Event</string>
 
 </resources>

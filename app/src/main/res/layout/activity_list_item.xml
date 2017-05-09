@@ -41,7 +41,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
@@ -55,6 +55,7 @@
                 android:layout_below="@+id/rl_title"
                 android:layout_margin="10dp"
                 android:layout_weight="1"
+                android:maxLines="2"
                 android:text="TextView"
                 android:textSize="20sp"
                 android:textStyle="italic" />
@@ -80,6 +81,7 @@
                 android:shadowDx="1.2"
                 android:shadowDy="1.2"
                 android:text="TextView"
+                android:maxLines="2"
                 android:textColor="@color/colorPrimaryDark"
                 android:textSize="24sp"
                 android:textStyle="bold"/>
@@ -111,6 +113,21 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:weightSum="1">
+
+                    <TextView
+                        android:id="@+id/rl_description_header"
+                        android:layout_width="match_parent"
+                        android:layout_height="20dp"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/rl_description"
+                        android:layout_margin="5dp"
+                        android:text="@string/item_view_descr"
+                        android:textSize="16sp"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/rl_description"
