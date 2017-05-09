@@ -78,7 +78,14 @@
 
         </activity>
 
-        <activity android:name=".view.ListItemActivity" />
+        <activity
+            android:name=".view.ListItemActivity"
+            android:label="@string/title_activity_list_item"
+            android:parentActivityName=".MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="gal.udc.evilcorp.lookaround.MainActivity" />
+        </activity>
 
         <!--
             Because android:exported is set to "false",

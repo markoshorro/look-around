@@ -99,6 +99,10 @@ public class GeolocationService extends Service {
     private SharedPreferences.OnSharedPreferenceChangeListener
             mPreferenceListener;
 
+    // More efficient requests
+    private RequestQueue requestQueue;
+    private HurlStack hurlStack;
+
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor
      */
@@ -143,6 +147,23 @@ public class GeolocationService extends Service {
         updateLocation();
         // We want this service to continue running until it is explicitly
         // stopped, so return sticky.
+
+
+        hurlStack = new HurlStack() {
+            @Override
+            protected HttpURLConnection createConnection(URL url) throws IOException {
+                HttpsURLConnection httpsURLConnection =
+                        (HttpsURLConnection) super.createConnection(url);
+                try {
+                    httpsURLConnection.setSSLSocketFactory(getSSLSocketFactory());
+                    httpsURLConnection.setHostnameVerifier(getHostnameVerifier());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return httpsURLConnection;
+            }
+        };
+        requestQueue = Volley.newRequestQueue(this, hurlStack);
 
         return START_NOT_STICKY;
     }
@@ -360,21 +381,6 @@ public class GeolocationService extends Service {
     {
         String url = Utils.URL_FB + query;
 
-        HurlStack hurlStack = new HurlStack() {
-            @Override
-            protected HttpURLConnection createConnection(URL url) throws IOException {
-                HttpsURLConnection httpsURLConnection =
-                        (HttpsURLConnection) super.createConnection(url);
-                try {
-                    httpsURLConnection.setSSLSocketFactory(getSSLSocketFactory());
-                    httpsURLConnection.setHostnameVerifier(getHostnameVerifier());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-                return httpsURLConnection;
-            }
-        };
-
         // Request a string response from the provided URL.
         JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
@@ -391,8 +397,9 @@ public class GeolocationService extends Service {
         });
 
         // Start the RequestQueue
-        final RequestQueue requestQueue = Volley.newRequestQueue(this, hurlStack);
-
+        if (requestQueue==null) {
+            requestQueue = Volley.newRequestQueue(this, hurlStack);
+        }
         // Add the request to the RequestQueue.
         requestQueue.add(jsonRequest);
     }
@@ -484,9 +491,11 @@ public class GeolocationService extends Service {
         };
 
         // Start the RequestQueue
-        final RequestQueue requestQueue = Volley.newRequestQueue(this, hurlStack);
 
         // Add the request to the RequestQueue.
+        if (requestQueue==null) {
+            requestQueue = Volley.newRequestQueue(this, hurlStack);
+        }
         requestQueue.add(jsonRequest);
     }
 

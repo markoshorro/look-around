@@ -13,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.R;
@@ -30,6 +31,8 @@ public class EventFragment extends Fragment {
 
     private static FragmentActivity event_fragment;
     private static ListView eventLeadsList;
+
+    private static List<Event> eventList = new ArrayList<>();
 
     private Context appContext;
 
@@ -57,7 +60,6 @@ public class EventFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
-        setRetainInstance(true);
     }
 
     @Override
@@ -69,6 +71,19 @@ public class EventFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_events, container, false);
         eventLeadsList = (ListView) rootView.findViewById(R.id.EventListView);
         event_fragment = getActivity();
+
+        EventsAdapter adapter = new EventsAdapter(event_fragment, eventList);
+        eventLeadsList.setAdapter(adapter);
+
+        eventLeadsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Event event = (Event) parent.getItemAtPosition(position);
+                Intent myIntent = new Intent(event_fragment, ListItemActivity.class);
+                myIntent.putExtra("event_serializable", event);
+                event_fragment.startActivity(myIntent);
+            }
+        });
 
         return rootView;
     }
@@ -88,12 +103,6 @@ public class EventFragment extends Fragment {
     @Override
     public final void onStop() {
         super.onStop();
-        getChildFragmentManager()
-                .beginTransaction()
-                .detach(Instance)
-                .commitAllowingStateLoss();
-
-
         Log.e(TAG, "onStop");
     }
 
@@ -109,20 +118,8 @@ public class EventFragment extends Fragment {
     }
 
 
-    public static void showList(final List<Event> events){
-
-        EventsAdapter adapter = new EventsAdapter(event_fragment, events);
-        eventLeadsList.setAdapter(adapter);
-
-        eventLeadsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Event event = (Event) parent.getItemAtPosition(position);
-                Intent myIntent = new Intent(event_fragment, ListItemActivity.class);
-                myIntent.putExtra("event_serializable", event);
-                event_fragment.startActivity(myIntent);
-            }
-        });
+    public static void updateList(final List<Event> events){
+        ((EventsAdapter)eventLeadsList.getAdapter()).update(events);
     }
 
     @Override

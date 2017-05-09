@@ -29,9 +29,9 @@ public class EventsAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     /**
-     * Constructor del Adapter.
-     * @param activity          Actividad padre del ListView.
-     * @param data              ArrayList con los datos a mostrar.
+     * Constructor
+     * @param activity          listView's parent
+     * @param data              data we want to display (arraylist)
      */
     public EventsAdapter(Activity activity, List<Event> data) {
         this.data = data;
@@ -39,8 +39,8 @@ public class EventsAdapter extends BaseAdapter {
     }
 
     /**
-     * Obtiene el número de elementos del ArrayList.
-     * @return      Devuelve el número de elementos.
+     * Number of elements in the arrar
+     * @return      number of elements
      */
     @Override
     public int getCount() {
@@ -48,9 +48,9 @@ public class EventsAdapter extends BaseAdapter {
     }
 
     /**
-     * Devuelve el objeto dado una posición del ArrayList.
-     * @param position          Posición del objeto.
-     * @return                  Devuelve el objeto de esa posición.
+     * Returns the object given a position
+     * @param position          position
+     * @return                  object given the position
      */
     @Override
     public Object getItem(int position) {
@@ -58,9 +58,9 @@ public class EventsAdapter extends BaseAdapter {
     }
 
     /**
-     * Obtiene el identificador de un objeto en una posición concreta.
-     * @param position          Posición del objeto.
-     * @return                  Identificador del objeto.
+     * Gets the object's ID from its position
+     * @param position          object's position
+     * @return                  returns ID
      */
     @Override
     public long getItemId(int position) {
@@ -68,11 +68,11 @@ public class EventsAdapter extends BaseAdapter {
     }
 
     /**
-     * Este método se encarga cargar la vista, procesar los datos y mostrarlos.
-     * @param position          Posición del objeto.
-     * @param view              Vista afectada.
-     * @param viewGroup         Conjunto de vistas.
-     * @return                  Devuelve el inflater con la vista y los datos.
+     * This method displays the view
+     * @param position          object's position
+     * @param view              view we want to display
+     * @param viewGroup         set of views
+     * @return                  returns the view
      */
     @Override
     public View getView(int position, View view, ViewGroup viewGroup) {
@@ -88,7 +88,17 @@ public class EventsAdapter extends BaseAdapter {
 
         name.setText(datos.getName());
         local.setText(datos.getDescription());
+
         return vi;
+    }
+
+    /**
+     * This method updates the list
+     * @param data               data we want to update
+     */
+    public void update(List<Event> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
 }

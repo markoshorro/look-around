@@ -86,5 +86,6 @@
     <string name="button_dialog_close">Close</string>
     <string name="first_launch_desc_sec_slide">You must accept the permissions asked!</string>
     <string name="first_launch_desc_third_slide">Thanks for granting permission! Now you can use the app!</string>
+    <string name="title_activity_list_item">ListItem</string>
 
 </resources>

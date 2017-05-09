@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < events.size(); i++) {
                             tokens[i] = events.get(i).toString();
                         }
-                        EventFragment.showList(events);
+                        EventFragment.updateList(events);
                         MapFragment.update(events);
                         break;
                     case Utils.MSG_ERR:
@@ -271,22 +271,36 @@ public class MainActivity extends AppCompatActivity {
      */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+        int prevItem = -1;
+
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
         @Override
         public Fragment getItem(int position) {
+            if (prevItem == 2) {
+                this.getItem(prevItem).getView().destroyDrawingCache();
+                this.notifyDataSetChanged();
+                prevItem = -1;
+            }
             switch (position) {
                 case 0:
                     return MapFragment.getInstance();
                 case 1:
                     return EventFragment.getInstance();
                 case 2:
+                    prevItem = 2;
                     return VuforiaFragment.getInstance();
                 default:
                     return null;
             }
+        }
+
+        @Override
+        public void finishUpdate(ViewGroup container) {
+            super.finishUpdate(container);
+            this.notifyDataSetChanged();
         }
 
         @Override
