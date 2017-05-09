@@ -8,11 +8,16 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+
 import java.util.HashMap;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.R;
 import gal.udc.evilcorp.lookaround.model.Event;
+import gal.udc.evilcorp.lookaround.util.CustomVolleyRequest;
+import gal.udc.evilcorp.lookaround.util.Utils;
 
 /**
  * Created by avelino on 01/05/2017.
@@ -27,7 +32,7 @@ public class EventsAdapter extends BaseAdapter {
     /* Variables privadas */
     private List<Event> data;
     private LayoutInflater inflater;
-
+    private Activity activity;
     /**
      * Constructor
      * @param activity          listView's parent
@@ -35,6 +40,7 @@ public class EventsAdapter extends BaseAdapter {
      */
     public EventsAdapter(Activity activity, List<Event> data) {
         this.data = data;
+        this.activity = activity;
         inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -88,6 +94,12 @@ public class EventsAdapter extends BaseAdapter {
 
         name.setText(datos.getName());
         local.setText(datos.getDescription());
+
+        ImageLoader imageLoader = CustomVolleyRequest.getInstance(activity.getApplicationContext())
+                .getImageLoader();
+
+        NetworkImageView avatar = (NetworkImageView) vi.findViewById(R.id.result_icon);
+        avatar.setImageUrl(Utils.URL_FB + datos.getId() + "/picture", imageLoader);
 
         return vi;
     }
