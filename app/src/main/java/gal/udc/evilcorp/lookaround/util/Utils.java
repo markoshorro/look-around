@@ -33,12 +33,8 @@ public class Utils {
     public static final int MSG_ERR       = 0x0080;
     public static final int MSG_NA        = 0x0081;
 
-
-    public static final int FIRST_LAUNCH_SUCCESS = 0xFFFF;
-
     // windows close
     public static boolean closed = true;
-
 
     // map
     public static int ZOOM_CAMERA = 17;

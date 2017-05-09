@@ -23,7 +23,7 @@ public class ListItemActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.list_item_activity);
+        setContentView(R.layout.activity_list_item);
 
         Intent intent = getIntent();
         Event event = (Event) intent.getSerializableExtra("event_serializable");

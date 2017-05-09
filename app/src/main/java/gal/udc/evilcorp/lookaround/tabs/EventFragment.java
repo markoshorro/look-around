@@ -1,6 +1,5 @@
 package gal.udc.evilcorp.lookaround.tabs;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,6 +24,8 @@ import gal.udc.evilcorp.lookaround.view.ListItemActivity;
  */
 
 public class EventFragment extends Fragment {
+
+
     private static final Fragment Instance = new EventFragment();
     private static final String TAG = "EVENTFRAGMENT";
 
@@ -33,8 +33,6 @@ public class EventFragment extends Fragment {
     private static ListView eventLeadsList;
 
     private static List<Event> eventList = new ArrayList<>();
-
-    private Context appContext;
 
     /**
      * Singleton pattern
@@ -44,23 +42,7 @@ public class EventFragment extends Fragment {
         return Instance;
     }
 
-
     public EventFragment() {}
-
-
-    public static EventFragment newInstance() {
-        
-        Bundle args = new Bundle();
-        
-        EventFragment fragment = new EventFragment();
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstance) {
-        super.onCreate(savedInstance);
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,43 +70,8 @@ public class EventFragment extends Fragment {
         return rootView;
     }
 
-    @Override
-    public final void onResume() {
-        super.onResume();
-        Log.e(TAG, "onResume");
-    }
-
-    @Override
-    public final void onPause() {
-        super.onPause();
-        Log.e(TAG, "onPause");
-    }
-
-    @Override
-    public final void onStop() {
-        super.onStop();
-        Log.e(TAG, "onStop");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.e(TAG, "onDestroy");
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        Log.e(TAG, "onViewCreated");
-    }
-
-
     public static void updateList(final List<Event> events){
         ((EventsAdapter)eventLeadsList.getAdapter()).update(events);
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
     }
 
 }

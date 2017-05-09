@@ -26,8 +26,6 @@ public class VuforiaFragment extends Fragment {
     private static final Fragment Instance = new VuforiaFragment();
     private final static String TAG = "VuforiaFragment";
 
-    private boolean setWindows = false;
-
     protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
     private FrameLayout fl_forUnity;
 
