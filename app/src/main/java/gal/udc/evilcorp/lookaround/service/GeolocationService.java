@@ -208,6 +208,7 @@ public class GeolocationService extends Service {
             @Override
             public void onLocationChanged(Location location) {
                 Log.e(TAG, "onLocationChanged!");
+                sendResult(Utils.MSG_INFO, Parcels.wrap("start_spinner"));
                 actualLocation = location;
                 double lat = (location.getLatitude());
                 double lng = (location.getLongitude());

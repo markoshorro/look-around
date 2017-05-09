@@ -2,7 +2,6 @@
 <resources>
     <string name="app_name">LookAround</string>
     <string name="take_picture">Sacar foto</string>
-    <string name="E">E</string>
     <string name="N">N</string>
     <string name="NE">NE</string>
     <string name="NW">NO</string>
@@ -24,7 +23,6 @@
     <string name="review_permissions">Se necesitan algunos permisos denegados</string>
     <string name="action_settings">Ajustes</string>
     <string name="action_about">Acerca</string>
-    <string name="vuforia">Vuforia</string>
     <string name="section_one">MAPA</string>
     <string name="section_two">EVENTOS</string>
     <string name="section_three">RA</string>
@@ -38,4 +36,8 @@
     <string name="app_credits">Esta aplicación fue desarrollada por Evil Corp en 2017.</string>
     <string name="button_dialog_close">Cerrar</string>
     <string name="map_current_pos">Posición actual</string>
+    <string name="title_event">Evento</string>
+    <string name="item_view_descr">Descripción</string>
+    <string name="first_launch_desc_sec_slide">Debes aceptar los permisos requeridos</string>
+    <string name="first_launch_desc_third_slide">¡Gracias por aceptar los permisos! ¡Ya puedes usar la aplicación!</string>
 </resources>

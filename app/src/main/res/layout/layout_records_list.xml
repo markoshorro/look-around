@@ -10,12 +10,11 @@
         android:id="@+id/layoutWithCircleDrawable"
         android:layout_gravity="center_vertical">
 
-        <com.android.volley.toolbox.NetworkImageView
+        <gal.udc.evilcorp.lookaround.view.CircularNetworkImage
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/result_icon"
-            android:src="@drawable/rounded_corner"
-            android:background="@drawable/rounded_corner"/>
+            android:src="@drawable/rounded_corner"/>
     </FrameLayout>
     <LinearLayout
             android:layout_width="match_parent"

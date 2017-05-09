@@ -125,6 +125,10 @@ public class MainActivity extends AppCompatActivity {
                 final int messageType = intent.getIntExtra(Utils.EVENT_TYPE, Utils.MSG_NO_EVENT);
                 final Parcelable messageContent = intent.getParcelableExtra(Utils.EVENT_CONTENT);
                 String tokens[];
+                if (messageType==Utils.MSG_INFO) {
+                    findViewById(R.id.progressBar).setVisibility(View.VISIBLE);
+                    return;
+                }
                 switch(messageType) {
                     case Utils.MSG_LOC:
                         break;
@@ -148,6 +152,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         EventFragment.updateList(events);
                         MapFragment.update(events);
+                        findViewById(R.id.progressBar).setVisibility(View.GONE);
                         break;
                     case Utils.MSG_ERR:
                     case Utils.MSG_NA:
@@ -156,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
                             Utils.buildAlertMessageNoGps(mActivity);
                         }
                         break;
+                    case Utils.MSG_INFO:
                     case Utils.MSG_NO_EVENT:
                         // Do nothing or log
                     default:

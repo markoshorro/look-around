@@ -80,7 +80,7 @@
 
         <activity
             android:name=".view.ListItemActivity"
-            android:label="@string/title_activity_list_item"
+            android:label="@string/title_event"
             android:parentActivityName=".MainActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
