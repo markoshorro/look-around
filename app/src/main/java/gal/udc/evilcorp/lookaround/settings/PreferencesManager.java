@@ -1,4 +1,4 @@
-package gal.udc.evilcorp.lookaround.util;
+package gal.udc.evilcorp.lookaround.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;

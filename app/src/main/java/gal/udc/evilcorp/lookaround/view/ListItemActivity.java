@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -12,7 +11,7 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import gal.udc.evilcorp.lookaround.R;
 import gal.udc.evilcorp.lookaround.model.Event;
-import gal.udc.evilcorp.lookaround.util.CustomVolleyRequest;
+import gal.udc.evilcorp.lookaround.model.CustomVolleyRequest;
 import gal.udc.evilcorp.lookaround.util.Utils;
 
 /**

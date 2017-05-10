@@ -26,6 +26,9 @@ public class VuforiaFragment extends Fragment {
     private static final Fragment Instance = new VuforiaFragment();
     private final static String TAG = "VuforiaFragment";
 
+    /**
+     * Views needed
+     */
     protected UnityPlayer mUnityPlayer; // don't change the name of this variable; referenced from native code
     private FrameLayout fl_forUnity;
 
@@ -48,7 +51,6 @@ public class VuforiaFragment extends Fragment {
         super.onCreate(savedInstance);
         setRetainInstance(true);
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -88,6 +90,10 @@ public class VuforiaFragment extends Fragment {
         Log.e(TAG, "onDestroy");
     }
 
+    /**
+     * When configuration changes it is needed to tell the UnityPlayer
+     * @param newConfig
+     */
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -95,6 +101,10 @@ public class VuforiaFragment extends Fragment {
         mUnityPlayer.configurationChanged(newConfig);
     }
 
+    /**
+     * Depending whether the fragment is visible or not, the unityplayer is shown or not
+     * @param isVisibleToUser
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);

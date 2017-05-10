@@ -78,6 +78,7 @@
 
         </activity>
 
+        <!-- item activity -->
         <activity
             android:name=".view.ListItemActivity"
             android:label="@string/title_event"
@@ -92,7 +93,7 @@
             the service is only available to this app.
         -->
         <service
-            android:name=".service.GeolocationService"
+            android:name=".model.GeolocationService"
             android:exported="false" />
 
         <!-- settings activity -->

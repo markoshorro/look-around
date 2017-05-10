@@ -2,31 +2,24 @@ package gal.udc.evilcorp.lookaround.util;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 
 import com.github.paolorotolo.appintro.AppIntro;
-import com.github.paolorotolo.appintro.AppIntro2;
-import com.github.paolorotolo.appintro.AppIntroBaseFragment;
 import com.github.paolorotolo.appintro.AppIntroFragment;
-import com.github.paolorotolo.appintro.ISlidePolicy;
 
 import gal.udc.evilcorp.lookaround.MainActivity;
 import gal.udc.evilcorp.lookaround.R;
+import gal.udc.evilcorp.lookaround.settings.PreferencesManager;
 
 /**
  * Created by marcos on 11/04/17.
  */
 
 public class FirstLaunch extends AppIntro {
-    private static final String TAG = "FirstLaunch";
+    private static final String TAG = "FirstLaunch"; // debug
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -75,8 +68,6 @@ public class FirstLaunch extends AppIntro {
         setProgressButtonEnabled(true);
 
     }
-
-
 
     @Override
     public void onSkipPressed(Fragment currentFragment) {

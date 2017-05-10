@@ -2,10 +2,6 @@ package gal.udc.evilcorp.lookaround.view;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Path;
-import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +11,11 @@ import android.widget.TextView;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 
-import java.util.HashMap;
 import java.util.List;
 
 import gal.udc.evilcorp.lookaround.R;
 import gal.udc.evilcorp.lookaround.model.Event;
-import gal.udc.evilcorp.lookaround.util.CustomVolleyRequest;
+import gal.udc.evilcorp.lookaround.model.CustomVolleyRequest;
 import gal.udc.evilcorp.lookaround.util.Utils;
 
 /**

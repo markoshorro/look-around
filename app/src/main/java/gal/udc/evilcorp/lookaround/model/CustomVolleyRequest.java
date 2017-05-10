@@ -1,4 +1,4 @@
-package gal.udc.evilcorp.lookaround.util;
+package gal.udc.evilcorp.lookaround.model;
 
 import android.content.Context;
 import android.graphics.Bitmap;

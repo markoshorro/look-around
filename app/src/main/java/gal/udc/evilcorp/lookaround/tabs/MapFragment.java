@@ -31,10 +31,16 @@ import gal.udc.evilcorp.lookaround.util.Utils;
 
 public class MapFragment extends Fragment {
 
+    /**
+     * Singleton pattern
+     */
     private static final Fragment Instance = new MapFragment();
 
-    MapView mMapView;
-    public static GoogleMap googleMap;
+    /**
+     * Map views
+     */
+    private MapView mMapView;
+    private static GoogleMap googleMap;
 
     // set of elements that can not be duplicated, hashcode needed
     private static Set<Event> loadedEvents;
@@ -53,70 +59,23 @@ public class MapFragment extends Fragment {
         this.loadedPlaces = new HashSet<>();
     }
 
+    /**
+     * Retain instance is enabled
+     * @param savedInstance
+     */
     @Override
     public void onCreate(Bundle savedInstance) {
         super.onCreate(savedInstance);
         setRetainInstance(true);
     }
 
-
-    public static void update(double lat, double lng) {
-        LatLng pos = new LatLng(lat, lng);
-        if (googleMap==null) {
-            return;
-        }
-        // For showing a move to my location button
-        googleMap.setMyLocationEnabled(true);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        // For zooming automatically to the location of the marker
-        CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(pos).zoom(Utils.ZOOM_CAMERA).build();
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-
-    }
-
-    public static void update(final List<Event> events) {
-        if (googleMap==null) {
-            return;
-        }
-
-        // For showing a move to my location button
-        googleMap.setMyLocationEnabled(true);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        for(final Event event: events) {
-            if (!loadedEvents.contains(event)) {
-                googleMap.addMarker(new MarkerOptions()
-                        .position(new LatLng(event.getLatitude(), event.getLongitude()))
-                        .title(event.getDescription()));
-                loadedEvents.add(event);
-            }
-        }
-    }
-
-    public static void update(final List<Place> places, boolean val) {
-        if (googleMap==null) {
-            return;
-        }
-
-        // For showing a move to my location button
-        googleMap.setMyLocationEnabled(true);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
-
-        for(final Place place: places) {
-            if (!loadedPlaces.contains(place)) {
-                MarkerOptions marker = new MarkerOptions()
-                        .position(new LatLng(place.getLat(), place.getLng()))
-                        .title(place.getName()
-                        );
-                marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                googleMap.addMarker(marker);
-                loadedPlaces.add(place);
-            }
-        }
-    }
-
+    /**
+     * This method initiates the map view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
@@ -145,5 +104,76 @@ public class MapFragment extends Fragment {
         });
 
         return rootView;
+    }
+
+    /**
+     * Updates the location
+     * @param lat
+     * @param lng
+     */
+    public static void update(double lat, double lng) {
+        LatLng pos = new LatLng(lat, lng);
+        if (googleMap==null) {
+            return;
+        }
+        // For showing a move to my location button
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        // For zooming automatically to the location of the marker
+        CameraPosition cameraPosition = new CameraPosition.Builder()
+                .target(pos).zoom(Utils.ZOOM_CAMERA).build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+
+    }
+
+    /**
+     * Updates the events' markers
+     * @param events
+     */
+    public static void update(final List<Event> events) {
+        if (googleMap==null) {
+            return;
+        }
+
+        // For showing a move to my location button
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        for(final Event event: events) {
+            if (!loadedEvents.contains(event)) {
+                googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(event.getLatitude(), event.getLongitude()))
+                        .title(event.getDescription()));
+                loadedEvents.add(event);
+            }
+        }
+    }
+
+    /**
+     * Updates the places' markers
+     * @param places
+     * @param val
+     */
+    public static void update(final List<Place> places, boolean val) {
+        if (googleMap==null) {
+            return;
+        }
+
+        // For showing a move to my location button
+        googleMap.setMyLocationEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(true);
+
+        for(final Place place: places) {
+            if (!loadedPlaces.contains(place)) {
+                MarkerOptions marker = new MarkerOptions()
+                        .position(new LatLng(place.getLat(), place.getLng()))
+                        .title(place.getName()
+                        );
+                marker.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                googleMap.addMarker(marker);
+                loadedPlaces.add(place);
+            }
+        }
     }
 }

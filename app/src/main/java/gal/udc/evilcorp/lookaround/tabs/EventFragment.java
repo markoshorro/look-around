@@ -24,14 +24,21 @@ import gal.udc.evilcorp.lookaround.view.ListItemActivity;
  */
 
 public class EventFragment extends Fragment {
-
-
+    /**
+     * Singleton pattern
+     */
     private static final Fragment Instance = new EventFragment();
-    private static final String TAG = "EVENTFRAGMENT";
+    private static final String TAG = "EVENTFRAGMENT"; //debug
 
+    /**
+     *
+     */
     private static FragmentActivity event_fragment;
     private static ListView eventLeadsList;
 
+    /**
+     * Data to update
+     */
     private static List<Event> eventList = new ArrayList<>();
 
     /**
@@ -70,6 +77,10 @@ public class EventFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * This method rewrites the list and updates the view
+     * @param events
+     */
     public static void updateList(final List<Event> events){
         ((EventsAdapter)eventLeadsList.getAdapter()).update(events);
     }

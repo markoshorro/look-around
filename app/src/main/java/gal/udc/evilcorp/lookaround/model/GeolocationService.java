@@ -1,4 +1,4 @@
-package gal.udc.evilcorp.lookaround.service;
+package gal.udc.evilcorp.lookaround.model;
 
 import android.app.Service;
 import android.content.Context;

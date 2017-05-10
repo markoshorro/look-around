@@ -11,7 +11,6 @@ import android.os.Parcelable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -19,12 +18,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import org.parceler.Parcels;
@@ -33,13 +30,11 @@ import java.util.List;
 
 import gal.udc.evilcorp.lookaround.model.Event;
 import gal.udc.evilcorp.lookaround.model.Place;
+import gal.udc.evilcorp.lookaround.model.GeolocationService;
 import gal.udc.evilcorp.lookaround.settings.SettingsActivity;
 import gal.udc.evilcorp.lookaround.tabs.EventFragment;
 import gal.udc.evilcorp.lookaround.tabs.MapFragment;
 import gal.udc.evilcorp.lookaround.tabs.VuforiaFragment;
-import gal.udc.evilcorp.lookaround.util.FirstLaunch;
-import gal.udc.evilcorp.lookaround.service.GeolocationService;
-import gal.udc.evilcorp.lookaround.util.PreferencesManager;
 import gal.udc.evilcorp.lookaround.util.Utils;
 import gal.udc.evilcorp.lookaround.view.AboutDialog;
 
@@ -111,6 +106,9 @@ public class MainActivity extends AppCompatActivity {
         startService();
     }
 
+    /**
+     * Start service method
+     */
     private void startService() {
         // start service
         Intent intent = new Intent(this, GeolocationService.class);
@@ -161,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
                             Utils.buildAlertMessageNoGps(mActivity);
                         }
                         break;
-                    case Utils.MSG_INFO:
                     case Utils.MSG_NO_EVENT:
                         // Do nothing or log
                     default:
@@ -171,15 +168,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
     }
-
-    //@Override
-//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        switch(requestCode) {
-//            case Utils.FIRST_LAUNCH_SUCCESS:
-//                startService();
-//                break;
-//        }
-//    }
 
     /**
      * Lifecycle methods
