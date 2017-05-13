@@ -37,19 +37,19 @@ public class FirstLaunch extends AppIntro {
         addSlide(AppIntroFragment.newInstance(
                 getString(R.string.first_launch_title),
                 getString(R.string.first_launch_desc),
-                R.mipmap.ic_lookaround,
+                R.mipmap.full_white,
                 ContextCompat.getColor(this, R.color.colorPrimaryLight)));
 
         addSlide(PermissionAppIntroFragment.newInstance(
                 getString(R.string.first_launch_title),
                 getString(R.string.first_launch_desc_sec_slide),
-                R.mipmap.ic_lookaround,
+                R.mipmap.ic_no_background_black,
                 ContextCompat.getColor(this, R.color.colorSecondaryLight)));
 
         addSlide(PermissionAppIntroFragment.newInstance(
                 getString(R.string.first_launch_title),
                 getString(R.string.first_launch_desc_third_slide),
-                R.mipmap.ic_lookaround,
+                R.mipmap.full_white,
                 ContextCompat.getColor(this, R.color.colorPrimaryLight)));
 
         // asking for permission

@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.mipmap.ic_lookaround);
+        getSupportActionBar().setLogo(R.mipmap.ic_no_background);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
